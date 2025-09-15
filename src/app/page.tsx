@@ -24,8 +24,10 @@ import { motion } from "framer-motion";
 import { ModelViewer } from "@/components/3d-viewer";
 import { CreditSystem } from "@/components/credit-system";
 import { ContentAd, SidebarAd } from "@/components/adsense/ad-placements";
+import { useI18n } from "@/components/i18n/i18n-context";
 
 export default function HomePage() {
+  const { t } = useI18n();
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("");
   const [pose, setPose] = useState("");
@@ -71,16 +73,9 @@ export default function HomePage() {
         className="text-center space-y-6"
       >
         <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-            Nano Banana
-          </h1>
-          <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            AI人物手办生成
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-            Google最先进的AI图像生成和编辑模型，为快速、对话式创意工作流程而设计。
-            从文字描述到3D手办模型，一键完成个性化创作。
-          </p>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900">{t("hero.title")}</h1>
+          <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">{t("hero.subtitle")}</h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">{t("hero.desc")}</p>
         </div>
 
         {/* Promotional Banner */}
@@ -88,12 +83,12 @@ export default function HomePage() {
           <div className="flex items-center justify-center space-x-4 text-sm">
             <span className="flex items-center space-x-1">
               <Sparkles className="w-4 h-4 text-blue-600" />
-              <span className="text-blue-800 font-medium">观看广告免费生成</span>
+              <span className="text-blue-800 font-medium">{t("banner.left")}</span>
             </span>
             <span className="text-gray-400">•</span>
             <span className="flex items-center space-x-1">
               <Zap className="w-4 h-4 text-purple-600" />
-              <span className="text-purple-800 font-medium">每日最多10个广告</span>
+              <span className="text-purple-800 font-medium">{t("banner.right")}</span>
             </span>
           </div>
         </div>
@@ -123,14 +118,14 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Settings className="w-5 h-5" />
-                    <span>参数设置</span>
+                    <span>{t("params.title")}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">描述词 *</label>
+                    <label className="text-sm font-medium">{t("params.descLabel", "描述词 *")}</label>
                     <Textarea
-                      placeholder="描述你想要生成的人物手办，例如：一个穿着蓝色连衣裙的可爱女孩，动漫风格，站立姿势"
+                      placeholder={t("params.desc.placeholder")}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       className="min-h-[100px]"
@@ -139,7 +134,7 @@ export default function HomePage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">风格</label>
+                      <label className="text-sm font-medium">{t("params.style")}</label>
                       <Select value={style} onValueChange={setStyle}>
                         <SelectTrigger>
                           <SelectValue placeholder="选择风格" />
@@ -154,7 +149,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">姿势</label>
+                      <label className="text-sm font-medium">{t("params.pose")}</label>
                       <Select value={pose} onValueChange={setPose}>
                         <SelectTrigger>
                           <SelectValue placeholder="选择姿势" />
@@ -199,7 +194,7 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Eye className="w-5 h-5" />
-                    <span>输出结果</span>
+                    <span>{t("result.title")}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -241,7 +236,7 @@ export default function HomePage() {
                     <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
                       <div className="text-center text-gray-500">
                         <Wand2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                        <p>生成的手办将在这里显示</p>
+                        <p>{t("result.empty")}</p>
                         <p className="text-sm mt-2">支持2D预览和3D模型查看</p>
                       </div>
                     </div>

@@ -1,0 +1,23 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "免费工具",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "创建",
+  "nav.prompts": "提示词",
+  "nav.pricing": "定价",
+  "nav.myImages": "我的作品",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "AI人物手办生成",
+  "hero.desc": "Google最先进的AI图像生成和编辑模型，为快速、对话式创意工作流程而设计。 从文字描述到3D手办模型，一键完成个性化创作。",
+  "banner.left": "观看广告免费生成",
+  "banner.right": "每日最多10个广告",
+  "params.title": "参数设置",
+  "params.desc.placeholder": "描述你想要生成的人物手办，例如：一个穿着蓝色连衣裙的可爱女孩，动漫风格，站立姿势",
+  "params.style": "风格",
+  "params.pose": "姿势",
+  "result.title": "输出结果",
+  "result.empty": "生成的手办将在这里显示"
+}
+
+

@@ -22,27 +22,31 @@ export function AdSenseBanner({
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      // 检查是否已经加载了AdSense脚本
-      if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-        // 如果已经加载，直接推送广告
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-      } else {
-        // 加载AdSense脚本
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`;
-        script.crossOrigin = 'anonymous';
-        document.head.appendChild(script);
-
-        script.onload = () => {
-          // 脚本加载完成后推送广告
+    const loadAd = () => {
+      try {
+        // 检查是否已经加载了AdSense脚本
+        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
+          // 如果已经加载，直接推送广告
           ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-        };
+        } else {
+          // 等待脚本加载
+          const checkAdSense = () => {
+            if ((window as any).adsbygoogle) {
+              ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+            } else {
+              setTimeout(checkAdSense, 100);
+            }
+          };
+          checkAdSense();
+        }
+      } catch (error) {
+        console.error('AdSense加载失败:', error);
       }
-    } catch (error) {
-      console.error('AdSense加载失败:', error);
-    }
+    };
+
+    // 延迟加载以确保DOM已准备好
+    const timer = setTimeout(loadAd, 100);
+    return () => clearTimeout(timer);
   }, [adSlot]);
 
   return (

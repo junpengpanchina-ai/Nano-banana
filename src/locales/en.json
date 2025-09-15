@@ -1,0 +1,23 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "Free Tools",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "Create",
+  "nav.prompts": "Prompts",
+  "nav.pricing": "Pricing",
+  "nav.myImages": "My Images",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "AI Figurine Generation",
+  "hero.desc": "Google's state-of-the-art image generation and editing model for fast, conversational creative workflows. From text to 3D figurine in one click.",
+  "banner.left": "Watch ads to generate for free",
+  "banner.right": "Up to 10 ads per day",
+  "params.title": "Parameters",
+  "params.desc.placeholder": "Describe the figurine you want, e.g. a cute girl in a blue dress, anime style, standing pose",
+  "params.style": "Style",
+  "params.pose": "Pose",
+  "result.title": "Result",
+  "result.empty": "The generated figurine will appear here"
+}
+
+

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useI18n } from "@/components/i18n/i18n-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -10,10 +11,12 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, Globe, User } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -24,7 +27,7 @@ export function Navbar() {
             <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center">
               <span className="text-black font-bold text-lg">B</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Nano Banana</span>
+            <span className="text-xl font-bold text-gray-900">{t("brand.name")}</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -32,7 +35,7 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-1">
-                  <span>免费工具</span>
+                  <span>{t("nav.freeTools")}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -48,7 +51,7 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-1">
-                  <span>Nano Banana Lora</span>
+                  <span>{t("nav.lora")}</span>
                   <Badge variant="secondary" className="ml-1 text-xs">Lora</Badge>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -63,32 +66,18 @@ export function Navbar() {
             </DropdownMenu>
 
             <Link href="/create">
-              <Button variant="ghost">创建</Button>
+              <Button variant="ghost">{t("nav.create")}</Button>
             </Link>
             <Link href="/prompts">
-              <Button variant="ghost">提示词</Button>
+              <Button variant="ghost">{t("nav.prompts")}</Button>
             </Link>
-            <Link href="/pricing">
-              <Button variant="ghost">定价</Button>
-            </Link>
-            <Link href="/my-images">
-              <Button variant="ghost">我的作品</Button>
-            </Link>
-            <Link href="/api">
-              <Button variant="ghost">API</Button>
-            </Link>
+            {/* 隐藏：定价 */}
+            {/* 隐藏：我的作品 / API */}
           </div>
 
           {/* Right side */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-              <Globe className="w-4 h-4" />
-              <span>EN</span>
-            </Button>
-            <Button variant="default" size="sm">
-              <User className="w-4 h-4 mr-2" />
-              登录
-            </Button>
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile menu button */}
@@ -115,18 +104,8 @@ export function Navbar() {
               <Link href="/pricing" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
                 定价
               </Link>
-              <Link href="/my-images" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                我的作品
-              </Link>
-              <Link href="/api" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                API
-              </Link>
-              <div className="pt-2 border-t">
-                <Button variant="default" size="sm" className="w-full">
-                  <User className="w-4 h-4 mr-2" />
-                  登录
-                </Button>
-              </div>
+              {/* 隐藏：我的作品 / API */}
+              <div className="pt-2 border-t" />
             </div>
           </div>
         )}
