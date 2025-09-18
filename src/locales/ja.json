@@ -1,0 +1,24 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "無料ツール",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "作成",
+  "nav.prompts": "プロンプト",
+  "nav.pricing": "料金",
+  "nav.myImages": "マイ画像",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "AIフィギュア生成",
+  "hero.desc": "Googleの最先端画像生成・編集モデル。テキストから3Dフィギュアをワンクリックで。",
+  "banner.left": "広告視聴で無料生成",
+  "banner.right": "1日最大10本",
+  "params.title": "パラメータ",
+  "params.desc.placeholder": "例：青いドレスの可愛い女の子、アニメ風、立ちポーズ",
+  "params.style": "スタイル",
+  "params.pose": "ポーズ",
+  "result.title": "結果",
+  "result.empty": "生成結果がここに表示されます"
+}
+
+
+

@@ -1,0 +1,24 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "Kostenlose Tools",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "Erstellen",
+  "nav.prompts": "Prompts",
+  "nav.pricing": "Preise",
+  "nav.myImages": "Meine Bilder",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "KI-Figuren-Generierung",
+  "hero.desc": "Googles modernstes Bildgenerierungs- und -bearbeitungsmodell. Von Text zur 3D-Figur mit einem Klick.",
+  "banner.left": "Kostenlos durch Werbeanzeigen",
+  "banner.right": "Bis zu 10/Tag",
+  "params.title": "Parameter",
+  "params.desc.placeholder": "Bsp.: Mädchen im blauen Kleid, Anime-Stil, stehende Pose",
+  "params.style": "Stil",
+  "params.pose": "Pose",
+  "result.title": "Ergebnis",
+  "result.empty": "Das Ergebnis erscheint hier"
+}
+
+
+

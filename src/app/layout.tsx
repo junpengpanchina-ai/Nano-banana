@@ -20,29 +20,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const ADS_ENABLED = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
   return (
     <html lang="zh-CN">
       <head>
-        {/* Google AdSense脚本 */}
-        <Script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-xxxxxxxxxx'}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        {/* Google AdSense脚本（仅生产/开启时加载） */}
+        {ADS_ENABLED && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-xxxxxxxxxx'}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body className={inter.className}>
         <I18nProvider>
           <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             {/* 顶部广告 */}
-            <HeaderAd />
+            {ADS_ENABLED && <HeaderAd />}
             <Navbar />
             <main className="container mx-auto px-4 py-8">
               {children}
             </main>
             <Footer />
             {/* 底部广告 */}
-            <FooterAd />
+            {ADS_ENABLED && <FooterAd />}
           </div>
         </I18nProvider>
       </body>

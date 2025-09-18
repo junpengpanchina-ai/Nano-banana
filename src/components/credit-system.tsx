@@ -99,73 +99,71 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
 
       {/* 获取积分方式 */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center space-x-2">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center space-x-2">
             <Gift className="w-5 h-5 text-yellow-500" />
             <span>获取积分</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* 观看广告 */}
-          <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                <Play className="w-5 h-5 text-white" />
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* 观看广告 */}
+            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <Play className="w-4 h-4 text-white" />
+                </div>
+                <div className="truncate">
+                  <h4 className="font-medium text-gray-900 text-sm truncate">观看广告</h4>
+                  <p className="text-xs text-gray-600 truncate">30秒获2积分</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">观看广告</h4>
-                <p className="text-sm text-gray-600">观看30秒广告获得2积分</p>
+              <div className="text-right shrink-0">
+                <Button 
+                  onClick={handleWatchAd}
+                  size="sm"
+                  disabled={dailyAdsWatched >= maxDailyAds}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                >
+                  {dailyAdsWatched >= maxDailyAds ? "达上限" : "观看"}
+                </Button>
+                <p className="text-[11px] text-gray-500 mt-1">剩 {maxDailyAds - dailyAdsWatched} 次</p>
               </div>
             </div>
-            <div className="text-right">
-              <Button 
-                onClick={handleWatchAd}
-                disabled={dailyAdsWatched >= maxDailyAds}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white"
-              >
-                {dailyAdsWatched >= maxDailyAds ? "今日已达上限" : "观看广告"}
-              </Button>
-              <p className="text-xs text-gray-500 mt-1">
-                剩余 {maxDailyAds - dailyAdsWatched} 次
-              </p>
-            </div>
-          </div>
 
-          {/* 每日免费积分 */}
-          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <Clock className="w-5 h-5 text-white" />
+            {/* 每日免费积分 */}
+            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-white" />
+                </div>
+                <div className="truncate">
+                  <h4 className="font-medium text-gray-900 text-sm truncate">每日免费</h4>
+                  <p className="text-xs text-gray-600 truncate">每天5积分</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">每日免费</h4>
-                <p className="text-sm text-gray-600">每天免费获得5积分</p>
-              </div>
-            </div>
-            <div className="text-right">
               <Button 
+                size="sm"
                 disabled={nextFreeCredit > 0}
                 className="bg-green-500 hover:bg-green-600 text-white"
               >
-                {nextFreeCredit > 0 ? `还需 ${Math.floor(nextFreeCredit / 3600)} 小时` : "领取免费积分"}
+                {nextFreeCredit > 0 ? `待 ${Math.floor(nextFreeCredit / 3600)} 小时` : "领取"}
               </Button>
             </div>
-          </div>
 
-          {/* 邀请好友 */}
-          <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                <Star className="w-5 h-5 text-white" />
+            {/* 邀请好友 */}
+            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200 md:col-span-2">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <Star className="w-4 h-4 text-white" />
+                </div>
+                <div className="truncate">
+                  <h4 className="font-medium text-gray-900 text-sm truncate">邀请好友</h4>
+                  <p className="text-xs text-gray-600 truncate">成功注册奖励10积分</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">邀请好友</h4>
-                <p className="text-sm text-gray-600">邀请好友注册获得10积分</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <Button variant="outline" className="border-purple-300 text-purple-700">
-                邀请好友
+              <Button variant="outline" size="sm" className="border-purple-300 text-purple-700">
+                邀请
               </Button>
             </div>
           </div>

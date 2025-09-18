@@ -1,0 +1,24 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "무료 도구",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "생성",
+  "nav.prompts": "프롬프트",
+  "nav.pricing": "요금",
+  "nav.myImages": "내 이미지",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "AI 피규어 생성",
+  "hero.desc": "Google의 최첨단 이미지 생성·편집 모델로, 텍스트에서 3D 피규어를 한 번에.",
+  "banner.left": "광고 시청으로 무료 생성",
+  "banner.right": "하루 최대 10개",
+  "params.title": "설정",
+  "params.desc.placeholder": "예: 파란 드레스를 입은 귀여운 소녀, 애니 스타일, 서 있는 자세",
+  "params.style": "스타일",
+  "params.pose": "포즈",
+  "result.title": "결과",
+  "result.empty": "생성된 결과가 여기에 표시됩니다"
+}
+
+
+

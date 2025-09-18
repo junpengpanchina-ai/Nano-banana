@@ -1,0 +1,24 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "Бесплатные инструменты",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "Создать",
+  "nav.prompts": "Промпты",
+  "nav.pricing": "Цены",
+  "nav.myImages": "Мои изображения",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "Генерация фигурок ИИ",
+  "hero.desc": "Современная модель генерации и редактирования изображений Google. От текста к 3D-фигурке в один клик.",
+  "banner.left": "Бесплатно за просмотр рекламы",
+  "banner.right": "До 10 в день",
+  "params.title": "Параметры",
+  "params.desc.placeholder": "Напр.: милая девушка в синем платье, стиль аниме, стоя",
+  "params.style": "Стиль",
+  "params.pose": "Позa",
+  "result.title": "Результат",
+  "result.empty": "Результат появится здесь"
+}
+
+
+

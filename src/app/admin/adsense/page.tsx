@@ -17,6 +17,50 @@ import {
 export default function AdSenseAdminPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'ads' | 'settings'>('overview');
   const [mockCredits, setMockCredits] = useState(5);
+  const PLACEHOLDER = process.env.NEXT_PUBLIC_ADS_PLACEHOLDER === 'true' || process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'true';
+  const ADS_ENABLED = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === 'true';
+
+  // 模拟收益本地持久化
+  type SimStats = {
+    date: string;
+    revenue: number;
+    impressions: number;
+    ecpm: number;
+  };
+  const [simStats, setSimStats] = useState<SimStats | null>(null);
+  
+  function seedSimStats(): SimStats {
+    const today = new Date().toISOString().slice(0, 10);
+    const impressions = Math.floor(2000 + Math.random() * 6000);
+    const ecpm = parseFloat((2 + Math.random() * 3).toFixed(2));
+    const revenue = parseFloat(((impressions / 1000) * ecpm).toFixed(2));
+    return { date: today, impressions, ecpm, revenue };
+  }
+
+  function loadOrInitSimStats(): SimStats {
+    try {
+      const raw = localStorage.getItem('nb_sim_ads_stats');
+      if (raw) {
+        const saved: SimStats = JSON.parse(raw);
+        const today = new Date().toISOString().slice(0, 10);
+        if (saved.date === today) return saved;
+      }
+    } catch {}
+    const seeded = seedSimStats();
+    localStorage.setItem('nb_sim_ads_stats', JSON.stringify(seeded));
+    return seeded;
+  }
+
+  function refreshSimStats() {
+    const next = seedSimStats();
+    localStorage.setItem('nb_sim_ads_stats', JSON.stringify(next));
+    setSimStats(next);
+  }
+
+  // 初始化
+  React.useEffect(() => {
+    setSimStats(loadOrInitSimStats());
+  }, []);
 
   const handleAdComplete = (credits: number) => {
     setMockCredits(prev => prev + credits);
@@ -63,6 +107,46 @@ export default function AdSenseAdminPage() {
         {/* 内容区域 */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            {/* 占位模式收益模拟 */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>占位模式收益模拟</CardTitle>
+                  <button
+                    className="text-sm px-3 py-1.5 rounded border hover:bg-gray-50"
+                    onClick={refreshSimStats}
+                  >
+                    重新生成
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="p-4 rounded-lg border bg-gray-50">
+                    <p className="text-sm text-gray-600">当前模式</p>
+                    <p className="text-xl font-semibold">
+                      {ADS_ENABLED ? '真实广告' : '占位/本地调试'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">环境变量控制</p>
+                  </div>
+                  <div className="p-4 rounded-lg border bg-gray-50">
+                    <p className="text-sm text-gray-600">预估今日收入（模拟）</p>
+                    <p className="text-2xl font-bold text-green-600">${simStats?.revenue?.toFixed(2) ?? '0.00'}</p>
+                    <p className="text-xs text-gray-500 mt-1">依据展示与eCPM随机生成</p>
+                  </div>
+                  <div className="p-4 rounded-lg border bg-gray-50">
+                    <p className="text-sm text-gray-600">预估展示（模拟）</p>
+                    <p className="text-2xl font-bold text-blue-600">{simStats?.impressions ?? 0}</p>
+                    <p className="text-xs text-gray-500 mt-1">占位位点近似值</p>
+                  </div>
+                  <div className="p-4 rounded-lg border bg-gray-50">
+                    <p className="text-sm text-gray-600">eCPM（模拟）</p>
+                    <p className="text-2xl font-bold text-purple-600">${simStats?.ecpm?.toFixed(2) ?? '0.00'}</p>
+                    <p className="text-xs text-gray-500 mt-1">$2 - $5</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             {/* 收入统计卡片 */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card>

@@ -17,7 +17,19 @@
   "params.style": "风格",
   "params.pose": "姿势",
   "result.title": "输出结果",
-  "result.empty": "生成的手办将在这里显示"
+  "result.empty": "生成的手办将在这里显示",
+  "tabs.text": "文字描述",
+  "tabs.image": "图片上传",
+  "tabs.model": "3D模型",
+  "btn.generate": "生成 (2积分)",
+  "btn.generating": "生成中...",
+  "btn.chooseFile": "选择文件",
+  "btn.download2d": "下载2D",
+  "btn.download3d": "下载3D",
+  "btn.share": "分享",
+  "btn.favorite": "收藏",
+  "watermark.label": "水印",
+  "watermark.add": "添加水印"
 }
 
 

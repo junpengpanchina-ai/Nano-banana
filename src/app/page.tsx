@@ -35,6 +35,8 @@ export default function HomePage() {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
   const [credits, setCredits] = useState(5);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!description.trim() || credits < 2) return;
@@ -62,6 +64,39 @@ export default function HomePage() {
 
   const handleCreditsChange = (newCredits: number) => {
     setCredits(newCredits);
+  };
+
+  const handleImageSelect = async (file: File) => {
+    if (!file) return;
+    setImageFile(file);
+    const url = URL.createObjectURL(file);
+    setImagePreview(url);
+    // 调用后端API
+    setGenerating(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("options", JSON.stringify({ style, pose }));
+      const res = await fetch("/api/generate/image", { method: "POST", body: form });
+      const data = await res.json();
+      if (res.ok) {
+        setResult({ url: data.thumbnailUrl || data.url, name: data.name });
+      }
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleImageSelect(file);
+  };
+
+  const handleBrowse = () => {
+    const input = document.getElementById("image-input-hidden") as HTMLInputElement | null;
+    input?.click();
   };
 
   return (
@@ -106,15 +141,15 @@ export default function HomePage() {
       >
         <Tabs defaultValue="text" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="text">文字描述</TabsTrigger>
-            <TabsTrigger value="image">图片上传</TabsTrigger>
-            <TabsTrigger value="model">3D模型</TabsTrigger>
+            <TabsTrigger value="text">{t("tabs.text")}</TabsTrigger>
+            <TabsTrigger value="image">{t("tabs.image")}</TabsTrigger>
+            <TabsTrigger value="model">{t("tabs.model")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="text" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Parameter Settings */}
-              <Card className="lg:col-span-1">
+              <Card className="lg:col-span-4 xl:col-span-4">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Settings className="w-5 h-5" />
@@ -165,17 +200,17 @@ export default function HomePage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">水印</label>
+                    <label className="text-sm font-medium">{t("watermark.label")}</label>
                     <div className="flex items-center space-x-2">
                       <input type="checkbox" className="rounded" />
-                      <span className="text-sm text-gray-600">添加水印</span>
+                      <span className="text-sm text-gray-600">{t("watermark.add")}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* 积分系统 */}
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-3 xl:col-span-3">
                 <CreditSystem
                   credits={credits}
                   onCreditsChange={handleCreditsChange}
@@ -185,12 +220,12 @@ export default function HomePage() {
               </div>
 
               {/* 侧边栏广告 */}
-              <div className="lg:col-span-1">
+              <div className="xl:col-span-1 hidden xl:block">
                 <SidebarAd />
               </div>
 
               {/* Output Result */}
-              <Card className="lg:col-span-1">
+              <Card className="lg:col-span-5 xl:col-span-5">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Eye className="w-5 h-5" />
@@ -216,19 +251,19 @@ export default function HomePage() {
                       <div className="flex space-x-2">
                         <Button size="sm" variant="outline" className="flex-1">
                           <Download className="w-4 h-4 mr-2" />
-                          下载2D
+                          {t("btn.download2d")}
                         </Button>
                         <Button size="sm" variant="outline" className="flex-1">
                           <Download className="w-4 h-4 mr-2" />
-                          下载3D
+                          {t("btn.download3d")}
                         </Button>
                         <Button size="sm" variant="outline">
                           <Share2 className="w-4 h-4 mr-2" />
-                          分享
+                          {t("btn.share")}
                         </Button>
                         <Button size="sm" variant="outline">
                           <Heart className="w-4 h-4 mr-2" />
-                          收藏
+                          {t("btn.favorite")}
                         </Button>
                       </div>
                     </div>
@@ -252,13 +287,37 @@ export default function HomePage() {
                 <CardTitle>图片上传生成</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                  <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-600 mb-4">上传图片或拖拽到此处</p>
-                  <Button variant="outline">
-                    <Upload className="w-4 h-4 mr-2" />
-                    选择文件
-                  </Button>
+                <input
+                  id="image-input-hidden"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageSelect(file);
+                  }}
+                />
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer"
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={handleDrop}
+                  onClick={handleBrowse}
+                >
+                  {imagePreview ? (
+                    <div className="space-y-4">
+                      <img src={imagePreview} alt="preview" className="max-h-80 mx-auto rounded-lg" />
+                      <div className="text-sm text-gray-600">{imageFile?.name}</div>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                      <p className="text-gray-600 mb-4">上传图片或拖拽到此处</p>
+                      <Button variant="outline" onClick={handleBrowse}>
+                        <Upload className="w-4 h-4 mr-2" />
+                        选择文件
+                      </Button>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>

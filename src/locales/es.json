@@ -1,0 +1,24 @@
+{
+  "brand.name": "Nano Banana",
+  "nav.freeTools": "Herramientas gratuitas",
+  "nav.lora": "Nano Banana Lora",
+  "nav.create": "Crear",
+  "nav.prompts": "Prompts",
+  "nav.pricing": "Precios",
+  "nav.myImages": "Mis imágenes",
+  "nav.api": "API",
+  "hero.title": "Nano Banana",
+  "hero.subtitle": "Generación de figuras AI",
+  "hero.desc": "Modelo de generación y edición de imágenes de Google. De texto a figura 3D con un clic.",
+  "banner.left": "Genera gratis viendo anuncios",
+  "banner.right": "Hasta 10 al día",
+  "params.title": "Parámetros",
+  "params.desc.placeholder": "Ej.: chica con vestido azul, estilo anime, de pie",
+  "params.style": "Estilo",
+  "params.pose": "Pose",
+  "result.title": "Resultado",
+  "result.empty": "El resultado aparecerá aquí"
+}
+
+
+

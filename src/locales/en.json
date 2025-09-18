@@ -17,7 +17,19 @@
   "params.style": "Style",
   "params.pose": "Pose",
   "result.title": "Result",
-  "result.empty": "The generated figurine will appear here"
+  "result.empty": "The generated figurine will appear here",
+  "tabs.text": "Text",
+  "tabs.image": "Image Upload",
+  "tabs.model": "3D Model",
+  "btn.generate": "Generate (2 credits)",
+  "btn.generating": "Generating...",
+  "btn.chooseFile": "Choose File",
+  "btn.download2d": "Download 2D",
+  "btn.download3d": "Download 3D",
+  "btn.share": "Share",
+  "btn.favorite": "Favorite",
+  "watermark.label": "Watermark",
+  "watermark.add": "Add watermark"
 }
 
 
