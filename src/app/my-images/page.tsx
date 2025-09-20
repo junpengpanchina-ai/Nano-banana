@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useI18n } from "@/components/i18n/i18n-context";
+import { formatDate } from "@/lib/i18n-utils";
 
 interface GeneratedImage {
   id: string;
@@ -166,8 +168,10 @@ export default function MyImagesPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('zh-CN', {
+  const { locale } = useI18n();
+  
+  const formatImageDate = (dateString: string) => {
+    return formatDate(dateString, locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -325,7 +329,7 @@ export default function MyImagesPage() {
                         )}
                       </div>
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>{formatDate(image.createdAt)}</span>
+                        <span>{formatImageDate(image.createdAt)}</span>
                         <div className="flex items-center space-x-3">
                           <button
                             onClick={() => handleLike(image.id)}
@@ -395,7 +399,7 @@ export default function MyImagesPage() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between mt-3 text-sm text-gray-500">
-                          <span>{formatDate(image.createdAt)}</span>
+                          <span>{formatImageDate(image.createdAt)}</span>
                           <div className="flex items-center space-x-4">
                             <button
                               onClick={() => handleLike(image.id)}
@@ -447,7 +451,7 @@ export default function MyImagesPage() {
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    <span>创建时间: {formatDate(selectedImage.createdAt)}</span>
+                    <span>创建时间: {formatImageDate(selectedImage.createdAt)}</span>
                     <span>消耗积分: {selectedImage.credits}</span>
                   </div>
                   <div className="flex items-center space-x-2">

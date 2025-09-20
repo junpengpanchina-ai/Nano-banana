@@ -1,13 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { validateApiKey } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 export async function POST(request: NextRequest) {
   try {
+    // 1. API密钥验证
+    const authResult = validateApiKey(request);
+    if (!authResult.valid) {
+      return NextResponse.json(
+        { error: "Unauthorized", message: authResult.error },
+        { status: 401 }
+      );
+    }
+
+    // 2. 频率限制检查
+    const rateLimitResult = checkRateLimit(request, authResult.userId);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          error: "Rate limit exceeded", 
+          message: rateLimitResult.error,
+          remaining: rateLimitResult.remaining,
+          resetTime: new Date(rateLimitResult.resetTime).toISOString()
+        },
+        { status: 429 }
+      );
+    }
+
+    // 3. 请求验证
     const body = await request.json();
     const { description, style, pose } = body;
 
     if (!description) {
       return NextResponse.json(
         { error: '描述词不能为空' },
+        { status: 400 }
+      );
+    }
+
+    // 4. 输入长度限制
+    if (description.length > 500) {
+      return NextResponse.json(
+        { error: '描述词过长' },
         { status: 400 }
       );
     }

@@ -13,8 +13,11 @@ import {
   Play,
   Image as ImageIcon
 } from "lucide-react";
+import { useI18n } from "@/components/i18n/i18n-context";
+import { formatNumber, formatCurrency, formatPercent } from "@/lib/i18n-utils";
 
 export default function AdSenseAdminPage() {
+  const { t, locale } = useI18n();
   const [activeTab, setActiveTab] = useState<'overview' | 'ads' | 'settings'>('overview');
   const [mockCredits, setMockCredits] = useState(5);
   const PLACEHOLDER = process.env.NEXT_PUBLIC_ADS_PLACEHOLDER === 'true' || process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'true';
@@ -79,17 +82,17 @@ export default function AdSenseAdminPage() {
       <div className="container mx-auto px-4 py-8">
         {/* 页面标题 */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">AdSense管理面板</h1>
-          <p className="text-gray-600 mt-2">管理Google AdSense广告和收入数据</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('ads.admin.title')}</h1>
+          <p className="text-gray-600 mt-2">{t('ads.admin.desc')}</p>
         </div>
 
         {/* 标签页导航 */}
         <div className="mb-6">
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
             {[
-              { id: 'overview', label: '概览', icon: BarChart3 },
-              { id: 'ads', label: '广告管理', icon: Eye },
-              { id: 'settings', label: '设置', icon: Settings }
+              { id: 'overview', label: t('ads.tabs.overview'), icon: BarChart3 },
+              { id: 'ads', label: t('ads.tabs.management'), icon: Eye },
+              { id: 'settings', label: t('ads.tabs.settings'), icon: Settings }
             ].map((tab) => (
               <Button
                 key={tab.id}
@@ -130,18 +133,18 @@ export default function AdSenseAdminPage() {
                     <p className="text-xs text-gray-500 mt-1">环境变量控制</p>
                   </div>
                   <div className="p-4 rounded-lg border bg-gray-50">
-                    <p className="text-sm text-gray-600">预估今日收入（模拟）</p>
-                    <p className="text-2xl font-bold text-green-600">${simStats?.revenue?.toFixed(2) ?? '0.00'}</p>
+                    <p className="text-sm text-gray-600">{t('ads.overview.revenue')}</p>
+                    <p className="text-2xl font-bold text-green-600">{formatCurrency(simStats?.revenue ?? 0, locale)}</p>
                     <p className="text-xs text-gray-500 mt-1">依据展示与eCPM随机生成</p>
                   </div>
                   <div className="p-4 rounded-lg border bg-gray-50">
-                    <p className="text-sm text-gray-600">预估展示（模拟）</p>
-                    <p className="text-2xl font-bold text-blue-600">{simStats?.impressions ?? 0}</p>
+                    <p className="text-sm text-gray-600">{t('ads.overview.impressions')}</p>
+                    <p className="text-2xl font-bold text-blue-600">{formatNumber(simStats?.impressions ?? 0, locale)}</p>
                     <p className="text-xs text-gray-500 mt-1">占位位点近似值</p>
                   </div>
                   <div className="p-4 rounded-lg border bg-gray-50">
-                    <p className="text-sm text-gray-600">eCPM（模拟）</p>
-                    <p className="text-2xl font-bold text-purple-600">${simStats?.ecpm?.toFixed(2) ?? '0.00'}</p>
+                    <p className="text-sm text-gray-600">{t('ads.overview.ecpm')}</p>
+                    <p className="text-2xl font-bold text-purple-600">{formatCurrency(simStats?.ecpm ?? 0, locale)}</p>
                     <p className="text-xs text-gray-500 mt-1">$2 - $5</p>
                   </div>
                 </div>
@@ -153,8 +156,8 @@ export default function AdSenseAdminPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">今日收入</p>
-                      <p className="text-2xl font-bold text-green-600">$12.45</p>
+                      <p className="text-sm font-medium text-gray-600">{t('ads.stats.todayRevenue')}</p>
+                      <p className="text-2xl font-bold text-green-600">{formatCurrency(12.45, locale)}</p>
                     </div>
                     <DollarSign className="w-8 h-8 text-green-500" />
                   </div>
@@ -166,8 +169,8 @@ export default function AdSenseAdminPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">总展示次数</p>
-                      <p className="text-2xl font-bold text-blue-600">2,847</p>
+                      <p className="text-sm font-medium text-gray-600">{t('ads.stats.totalImpressions')}</p>
+                      <p className="text-2xl font-bold text-blue-600">{formatNumber(2847, locale)}</p>
                     </div>
                     <Eye className="w-8 h-8 text-blue-500" />
                   </div>
@@ -179,8 +182,8 @@ export default function AdSenseAdminPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">点击率</p>
-                      <p className="text-2xl font-bold text-purple-600">2.34%</p>
+                      <p className="text-sm font-medium text-gray-600">{t('ads.stats.clickRate')}</p>
+                      <p className="text-2xl font-bold text-purple-600">{formatPercent(0.0234, locale)}</p>
                     </div>
                     <BarChart3 className="w-8 h-8 text-purple-500" />
                   </div>
@@ -192,8 +195,8 @@ export default function AdSenseAdminPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">eCPM</p>
-                      <p className="text-2xl font-bold text-orange-600">$4.37</p>
+                      <p className="text-sm font-medium text-gray-600">{t('ads.stats.ecpm')}</p>
+                      <p className="text-2xl font-bold text-orange-600">{formatCurrency(4.37, locale)}</p>
                     </div>
                     <DollarSign className="w-8 h-8 text-orange-500" />
                   </div>

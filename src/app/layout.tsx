@@ -33,6 +33,17 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
+        {/* hreflang alternates */}
+        <link rel="alternate" hrefLang="zh-CN" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-CN`} />
+        <link rel="alternate" hrefLang="zh-TW" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-TW`} />
+        <link rel="alternate" hrefLang="en" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/en`} />
+        <link rel="alternate" hrefLang="ja" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ja`} />
+        <link rel="alternate" hrefLang="ko" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ko`} />
+        <link rel="alternate" hrefLang="es" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/es`} />
+        <link rel="alternate" hrefLang="fr" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/fr`} />
+        <link rel="alternate" hrefLang="de" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/de`} />
+        <link rel="alternate" hrefLang="ru" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ru`} />
+        <link rel="alternate" hrefLang="x-default" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-CN`} />
       </head>
       <body className={inter.className}>
         <I18nProvider>

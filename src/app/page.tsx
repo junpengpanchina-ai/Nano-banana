@@ -25,6 +25,7 @@ import { ModelViewer } from "@/components/3d-viewer";
 import { CreditSystem } from "@/components/credit-system";
 import { ContentAd, SidebarAd } from "@/components/adsense/ad-placements";
 import { useI18n } from "@/components/i18n/i18n-context";
+import { ApiKeyManager } from "@/components/api-key-manager";
 
 export default function HomePage() {
   const { t } = useI18n();
@@ -37,6 +38,7 @@ export default function HomePage() {
   const [credits, setCredits] = useState(5);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!description.trim() || credits < 2) return;
@@ -44,22 +46,67 @@ export default function HomePage() {
     setGenerating(true);
     setProgress(0);
     
-    // 模拟生成过程
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setGenerating(false);
-          setResult({
-            url: "/api/placeholder/400/400",
-            name: "生成的手办模型"
-          });
-          setCredits(prev => prev - 2);
-          return 100;
-        }
-        return prev + 10;
+    try {
+      // 检查API密钥
+      if (!apiKey) {
+        alert('请先获取API密钥');
+        setGenerating(false);
+        return;
+      }
+
+      // 创建FormData
+      const formData = new FormData();
+      formData.append('prompt', description);
+      formData.append('service', 'grsai'); // 默认使用grsai服务
+      formData.append('options', JSON.stringify({
+        style: style || 'anime',
+        pose: pose || 'standing'
+      }));
+
+      // 如果有上传的图片文件，也添加到FormData
+      if (imageFile) {
+        formData.append('file', imageFile);
+      }
+
+      // 调用受保护的API
+      const response = await fetch('/api/generate/image', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: formData
       });
-    }, 200);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '生成失败');
+      }
+
+      const result = await response.json();
+      
+      // 模拟进度条
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setGenerating(false);
+            setResult({
+              url: result.url,
+              name: result.name || "生成的手办模型"
+            });
+            setCredits(prev => prev - 2);
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+    } catch (error) {
+      console.error('生成失败:', error);
+      alert(`生成失败: ${error.message}`);
+      setGenerating(false);
+      setProgress(0);
+    }
   };
 
   const handleCreditsChange = (newCredits: number) => {
@@ -208,6 +255,11 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* API密钥管理 */}
+              <div className="lg:col-span-3 xl:col-span-3">
+                <ApiKeyManager onApiKeyChange={setApiKey} />
+              </div>
 
               {/* 积分系统 */}
               <div className="lg:col-span-3 xl:col-span-3">

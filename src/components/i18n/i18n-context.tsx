@@ -15,6 +15,17 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 const STORAGE_KEY = "nb_locale";
 
 const DEFAULT_LOCALE = "zh-CN";
+const SUPPORTED_LOCALES = [
+  "zh-CN",
+  "zh-TW",
+  "en",
+  "ja",
+  "ko",
+  "es",
+  "fr",
+  "de",
+  "ru",
+] as const;
 
 const LOCALES = [
   "zh-CN",
@@ -62,7 +73,34 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    setLocaleState(saved || DEFAULT_LOCALE);
+    if (saved && SUPPORTED_LOCALES.includes(saved as any)) {
+      setLocaleState(saved);
+      return;
+    }
+
+    // 首次：优先使用浏览器语言，其次 zh-CN
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator.language : '';
+      const tryMatch = (lang: string | undefined | null): string => {
+        if (!lang) return DEFAULT_LOCALE;
+        // 完整匹配（如 zh-CN / en / ja）
+        if (SUPPORTED_LOCALES.includes(lang as any)) return lang;
+        // 前缀匹配（如 en-US -> en）/（zh-HK -> zh-TW 优先）
+        const short = lang.split('-')[0].toLowerCase();
+        // 优先匹配 zh-* 到 zh-CN/zh-TW
+        if (short === 'zh') {
+          if (/zh[-_]?tw|zh[-_]?hk|zh[-_]?mo/i.test(lang)) return 'zh-TW';
+          return 'zh-CN';
+        }
+        const found = (SUPPORTED_LOCALES as readonly string[]).find(l => l.toLowerCase().startsWith(short));
+        return found || DEFAULT_LOCALE;
+      };
+      const chosen = tryMatch(nav);
+      setLocaleState(chosen);
+      localStorage.setItem(STORAGE_KEY, chosen);
+    } catch {
+      setLocaleState(DEFAULT_LOCALE);
+    }
   }, []);
 
   useEffect(() => {
