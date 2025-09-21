@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validateApiKey } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
 // AI服务配置
 const AI_SERVICES = {
@@ -122,35 +124,59 @@ async function generateWithReplicate(prompt: string, options: any) {
 }
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now();
-  
   try {
+    // 1. API密钥验证
+    const authResult = validateApiKey(request);
+    if (!authResult.valid) {
+      return NextResponse.json(
+        { error: "Unauthorized", message: authResult.error },
+        { status: 401 }
+      );
+    }
+
+    // 2. 频率限制检查
+    const rateLimitResult = checkRateLimit(request, authResult.userId);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          error: "Rate limit exceeded", 
+          message: rateLimitResult.error,
+          remaining: rateLimitResult.remaining,
+          resetTime: new Date(rateLimitResult.resetTime).toISOString()
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': '100',
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.resetTime.toString(),
+            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
+          }
+        }
+      );
+    }
+
+    // 3. 请求验证
     const form = await request.formData();
     const file = form.get("file") as File | null;
     const prompt = form.get("prompt") as string;
     const service = form.get("service") as string || "grsai";
     const options = form.get("options") ? JSON.parse(form.get("options") as string) : {};
 
-    // 清理输入
-    const cleanPrompt = prompt ? prompt.trim() : "";
-    const cleanService = service || "grsai";
-
-    if (!file && !cleanPrompt) {
+    // 4. 输入验证
+    if (!file && !prompt) {
       return NextResponse.json({ error: "缺少文件或提示词" }, { status: 400 });
     }
 
-    // 文件验证
-    if (file) {
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      
-      if (file.size > maxSize) {
-        return NextResponse.json({ error: "文件大小超过10MB限制" }, { status: 400 });
-      }
-      
-      if (!allowedTypes.includes(file.type)) {
-        return NextResponse.json({ error: "不支持的文件类型" }, { status: 400 });
-      }
+    // 5. 服务白名单验证
+    const allowedServices = ['grsai', 'stability', 'openai', 'replicate'];
+    if (!allowedServices.includes(service)) {
+      return NextResponse.json({ error: "不支持的服务" }, { status: 400 });
+    }
+
+    // 6. 提示词长度限制
+    if (prompt && prompt.length > 1000) {
+      return NextResponse.json({ error: "提示词过长" }, { status: 400 });
     }
 
     let imageUrl: string;
@@ -158,19 +184,19 @@ export async function POST(request: NextRequest) {
 
     try {
       // 根据选择的服务生成图像
-      switch (cleanService) {
+      switch (service) {
         case "grsai":
           if (!AI_SERVICES.grsai.apiKey) {
             throw new Error("Grsai API key not configured");
           }
-          imageUrl = await generateWithGrsai(cleanPrompt || "anime figure", options);
+          imageUrl = await generateWithGrsai(prompt || "anime figure", options);
           break;
           
         case "stability":
           if (!AI_SERVICES.stability.apiKey) {
             throw new Error("Stability API key not configured");
           }
-          const stabilityImage = await generateWithStability(cleanPrompt || "anime figure", options);
+          const stabilityImage = await generateWithStability(prompt || "anime figure", options);
           imageUrl = `data:image/png;base64,${stabilityImage}`;
           break;
           
@@ -178,18 +204,18 @@ export async function POST(request: NextRequest) {
           if (!AI_SERVICES.openai.apiKey) {
             throw new Error("OpenAI API key not configured");
           }
-          imageUrl = await generateWithOpenAI(cleanPrompt || "anime figure", options);
+          imageUrl = await generateWithOpenAI(prompt || "anime figure", options);
           break;
           
         case "replicate":
           if (!AI_SERVICES.replicate.apiKey) {
             throw new Error("Replicate API key not configured");
           }
-          imageUrl = await generateWithReplicate(cleanPrompt || "anime figure", options);
+          imageUrl = await generateWithReplicate(prompt || "anime figure", options);
           break;
           
         default:
-          throw new Error(`Unsupported service: ${cleanService}`);
+          throw new Error(`Unsupported service: ${service}`);
       }
 
       // 生成缩略图
@@ -197,9 +223,22 @@ export async function POST(request: NextRequest) {
 
     } catch (aiError) {
       console.error("AI service error:", aiError);
-      // 降级到占位图
-      imageUrl = `https://picsum.photos/seed/${Date.now()}/512/512`;
-      thumbnailUrl = `https://picsum.photos/seed/${Date.now() + 1}/400/400`;
+      // 记录错误但不暴露敏感信息
+      const errorId = Math.random().toString(36).substring(2, 15);
+      console.error(`Error ID: ${errorId}`, {
+        userId: authResult.userId,
+        service,
+        timestamp: new Date().toISOString()
+      });
+      
+      return NextResponse.json(
+        { 
+          error: "AI服务暂时不可用", 
+          errorId,
+          message: "请稍后重试或联系管理员"
+        }, 
+        { status: 503 }
+      );
     }
 
     const result = {
@@ -209,8 +248,8 @@ export async function POST(request: NextRequest) {
       name: file?.name || "generated_image",
       size: file?.size || 0,
       type: file?.type || "image/png",
-      service: cleanService,
-      prompt: cleanPrompt,
+      service: service,
+      prompt: prompt,
       options,
       createdAt: new Date().toISOString(),
     };
@@ -218,17 +257,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result);
   } catch (e) {
     console.error("image generate error", e);
-    const errorMessage = e instanceof Error ? e.message : "生成失败";
-    return NextResponse.json({ error: "生成失败" }, { status: 500 });
+    return NextResponse.json({ 
+      error: "服务器内部错误", 
+      message: "请稍后重试" 
+    }, { status: 500 });
   }
 }
 
 export async function GET() {
   return NextResponse.json({ 
-    message: "image generate api ok",
-    services: Object.keys(AI_SERVICES).map(key => ({
-      name: key,
-      configured: !!AI_SERVICES[key as keyof typeof AI_SERVICES].apiKey
-    }))
+    message: "API服务运行中",
+    version: "1.0.0",
+    status: "healthy"
   });
 }
+
+
+

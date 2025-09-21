@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AdSenseManager } from "@/components/adsense/adsense-manager";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,7 @@ export default function AdSenseAdminPage() {
   }
 
   // 初始化
-  React.useEffect(() => {
+  useEffect(() => {
     setSimStats(loadOrInitSimStats());
   }, []);
 

@@ -20,7 +20,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const ADS_ENABLED = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
+  // 开发环境默认禁用广告
+  const ADS_ENABLED = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
   return (
     <html lang="zh-CN">
       <head>
@@ -31,6 +32,9 @@ export default function RootLayout({
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-xxxxxxxxxx'}`}
             crossOrigin="anonymous"
             strategy="afterInteractive"
+            onError={(e) => {
+              console.warn('AdSense脚本加载失败，可能是广告拦截器:', e);
+            }}
           />
         )}
         {/* hreflang alternates */}

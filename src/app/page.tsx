@@ -34,7 +34,7 @@ export default function HomePage() {
   const [pose, setPose] = useState("");
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<{url: string, name: string} | null>(null);
   const [credits, setCredits] = useState(5);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -103,7 +103,7 @@ export default function HomePage() {
 
     } catch (error) {
       console.error('生成失败:', error);
-      alert(`生成失败: ${error.message}`);
+      alert(`生成失败: ${error instanceof Error ? error.message : '未知错误'}`);
       setGenerating(false);
       setProgress(0);
     }

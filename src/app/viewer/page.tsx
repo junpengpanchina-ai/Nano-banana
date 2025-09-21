@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ModelViewer } from "@/components/3d-viewer";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
-export default function ViewerPage() {
+function ViewerContent() {
   const searchParams = useSearchParams();
   const modelUrl = searchParams.get('model');
   const imageUrl = searchParams.get('image');
@@ -211,5 +211,13 @@ export default function ViewerPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ViewerPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">加载中...</div>}>
+      <ViewerContent />
+    </Suspense>
   );
 }

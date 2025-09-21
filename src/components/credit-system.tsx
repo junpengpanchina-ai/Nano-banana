@@ -130,7 +130,7 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
                 >
                   {dailyAdsWatched >= maxDailyAds ? t('credits.reachedLimit') : t('credits.watch')}
                 </Button>
-                <p className="text-[11px] text-gray-500 mt-1">{t('credits.remaining', { count: maxDailyAds - dailyAdsWatched })}</p>
+                <p className="text-[11px] text-gray-500 mt-1">剩 {maxDailyAds - dailyAdsWatched} 次</p>
               </div>
             </div>
 
@@ -150,7 +150,7 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
                 disabled={nextFreeCredit > 0}
                 className="bg-green-500 hover:bg-green-600 text-white"
               >
-                {nextFreeCredit > 0 ? t('credits.waitHours', { hours: Math.floor(nextFreeCredit / 3600) }) : t('credits.claim')}
+                {nextFreeCredit > 0 ? `待 ${Math.floor(nextFreeCredit / 3600)} 小时` : t('credits.claim')}
               </Button>
             </div>
 
@@ -193,7 +193,7 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
           ) : (
             <div className="flex items-center space-x-2">
               <Sparkles className="w-5 h-5" />
-              <span>{t('credits.generateFigure', { cost: 2 })}</span>
+              <span>生成手办 (消耗2积分)</span>
             </div>
           )}
         </Button>

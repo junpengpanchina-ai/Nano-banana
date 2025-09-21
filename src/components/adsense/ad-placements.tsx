@@ -43,8 +43,8 @@ export function HeaderAd() {
         <Placeholder height={90} kind="banner" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567890"
-          adFormat="horizontal"
+          slot="1234567890"
+          format="horizontal"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
@@ -62,8 +62,8 @@ export function SidebarAd() {
         <Placeholder height={250} kind="rectangle" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567891"
-          adFormat="rectangle"
+          slot="1234567891"
+          format="rectangle"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
@@ -81,8 +81,8 @@ export function ContentAd() {
         <Placeholder height={280} kind="rectangle" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567892"
-          adFormat="rectangle"
+          slot="1234567892"
+          format="rectangle"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
@@ -100,8 +100,8 @@ export function FooterAd() {
         <Placeholder height={90} kind="banner" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567894"
-          adFormat="horizontal"
+          slot="1234567894"
+          format="horizontal"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
@@ -119,8 +119,8 @@ export function MobileAd() {
         <Placeholder height={60} kind="auto" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567895"
-          adFormat="auto"
+          slot="1234567895"
+          format="auto"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
@@ -138,8 +138,8 @@ export function DesktopAd() {
         <Placeholder height={250} kind="rectangle" />
       ) : (
         <AdSenseBanner
-          adSlot="1234567896"
-          adFormat="rectangle"
+          slot="1234567896"
+          format="rectangle"
           className="w-full"
           responsive={true}
           adStyle={{ display: 'block', width: '100%' }}
