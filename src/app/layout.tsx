@@ -4,8 +4,6 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { I18nProvider } from "@/components/i18n/i18n-context";
 import { Footer } from "@/components/layout/footer";
-import { HeaderAd, FooterAd } from "@/components/adsense/ad-placements";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,23 +18,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 开发环境默认禁用广告
-  const ADS_ENABLED = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
   return (
     <html lang="zh-CN">
       <head>
-        {/* Google AdSense脚本（仅生产/开启时加载） */}
-        {ADS_ENABLED && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-xxxxxxxxxx'}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-            onError={(e) => {
-              console.warn('AdSense脚本加载失败，可能是广告拦截器:', e);
-            }}
-          />
-        )}
         {/* hreflang alternates */}
         <link rel="alternate" hrefLang="zh-CN" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-CN`} />
         <link rel="alternate" hrefLang="zh-TW" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-TW`} />
@@ -52,15 +36,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <I18nProvider>
           <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            {/* 顶部广告 */}
-            {ADS_ENABLED && <HeaderAd />}
             <Navbar />
             <main className="container mx-auto px-4 py-8">
               {children}
             </main>
             <Footer />
-            {/* 底部广告 */}
-            {ADS_ENABLED && <FooterAd />}
           </div>
         </I18nProvider>
       </body>

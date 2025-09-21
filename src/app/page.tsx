@@ -20,10 +20,8 @@ import {
   Zap,
   Sparkles
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { ModelViewer } from "@/components/3d-viewer";
 import { CreditSystem } from "@/components/credit-system";
-import { ContentAd, SidebarAd } from "@/components/adsense/ad-placements";
 import { useI18n } from "@/components/i18n/i18n-context";
 import { ApiKeyManager } from "@/components/api-key-manager";
 
@@ -149,11 +147,7 @@ export default function HomePage() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6"
-      >
+      <div className="text-center space-y-6">
         <div className="space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900">{t("hero.title")}</h1>
           <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">{t("hero.subtitle")}</h2>
@@ -174,18 +168,11 @@ export default function HomePage() {
             </span>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* 内容中广告 */}
-      <ContentAd />
 
       {/* Main Generation Interface */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="max-w-6xl mx-auto"
-      >
+      <div className="max-w-6xl mx-auto">
         <Tabs defaultValue="text" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="text">{t("tabs.text")}</TabsTrigger>
@@ -271,10 +258,6 @@ export default function HomePage() {
                 />
               </div>
 
-              {/* 侧边栏广告 */}
-              <div className="xl:col-span-1 hidden xl:block">
-                <SidebarAd />
-              </div>
 
               {/* Output Result */}
               <Card className="lg:col-span-5 xl:col-span-5">
@@ -393,15 +376,10 @@ export default function HomePage() {
             </Card>
           </TabsContent>
         </Tabs>
-      </motion.div>
+      </div>
 
       {/* Features Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="max-w-6xl mx-auto"
-      >
+      <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-8">为什么选择 Nano Banana？</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
@@ -434,7 +412,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

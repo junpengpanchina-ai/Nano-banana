@@ -14,7 +14,6 @@ import {
   Crown,
   Sparkles
 } from "lucide-react";
-import { AdSystem } from "./ad-system";
 import { useI18n } from "@/components/i18n/i18n-context";
 import { formatNumber, formatRelativeTime } from "@/lib/i18n-utils";
 
@@ -27,9 +26,6 @@ interface CreditSystemProps {
 
 export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating }: CreditSystemProps) {
   const { t, locale } = useI18n();
-  const [showAdModal, setShowAdModal] = useState(false);
-  const [dailyAdsWatched, setDailyAdsWatched] = useState(0);
-  const [maxDailyAds] = useState(10);
   const [nextFreeCredit, setNextFreeCredit] = useState(0);
 
   // 模拟每日免费积分倒计时
@@ -40,24 +36,14 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
     return () => clearInterval(interval);
   }, []);
 
-  const handleWatchAd = () => {
-    if (dailyAdsWatched < maxDailyAds) {
-      setShowAdModal(true);
-    }
-  };
 
-  const handleAdComplete = (earnedCredits: number) => {
-    onCreditsChange(credits + earnedCredits);
-    setDailyAdsWatched(prev => prev + 1);
-    setShowAdModal(false);
-  };
 
   const handleGenerate = () => {
     if (credits >= 2) {
       onGenerate();
     } else {
-      // 积分不足，提示观看广告
-      setShowAdModal(true);
+      // 积分不足，提示等待每日免费积分
+      alert('积分不足，请等待每日免费积分或稍后再试');
     }
   };
 
@@ -90,12 +76,6 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
                 </div>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">{t('credits.todayWatched')}</p>
-              <p className="text-lg font-semibold text-gray-900">
-                {formatNumber(dailyAdsWatched, locale)}/{formatNumber(maxDailyAds, locale)} {t('credits.ads')}
-              </p>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -110,29 +90,6 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* 观看广告 */}
-            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-              <div className="flex items-center space-x-3 min-w-0">
-                <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-                  <Play className="w-4 h-4 text-white" />
-                </div>
-                <div className="truncate">
-                  <h4 className="font-medium text-gray-900 text-sm truncate">{t('credits.watchAds')}</h4>
-                  <p className="text-xs text-gray-600 truncate">{t('credits.watchAdsDesc')}</p>
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <Button 
-                  onClick={handleWatchAd}
-                  size="sm"
-                  disabled={dailyAdsWatched >= maxDailyAds}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
-                >
-                  {dailyAdsWatched >= maxDailyAds ? t('credits.reachedLimit') : t('credits.watch')}
-                </Button>
-                <p className="text-[11px] text-gray-500 mt-1">剩 {maxDailyAds - dailyAdsWatched} 次</p>
-              </div>
-            </div>
 
             {/* 每日免费积分 */}
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
@@ -205,14 +162,6 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
         )}
       </div>
 
-      {/* 广告系统 */}
-      <AdSystem
-        isOpen={showAdModal}
-        onClose={() => setShowAdModal(false)}
-        onAdComplete={handleAdComplete}
-        adType="video"
-        creditsReward={2}
-      />
     </div>
   );
 }

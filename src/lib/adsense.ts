@@ -2,7 +2,7 @@
 
 export const ADSENSE_CONFIG = {
   clientId: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-xxxxxxxxxx',
-  enabled: process.env.NEXT_PUBLIC_ADSENSE_ENABLED === 'true',
+  enabled: false, // 全局禁用广告
   adSlots: {
     header: process.env.NEXT_PUBLIC_HEADER_AD_SLOT || '1234567890',
     sidebar: process.env.NEXT_PUBLIC_SIDEBAR_AD_SLOT || '1234567891',
