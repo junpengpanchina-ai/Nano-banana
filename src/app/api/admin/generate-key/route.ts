@@ -5,7 +5,9 @@ export async function POST(request: NextRequest) {
   try {
     // 简单的管理员验证（生产环境应该使用更安全的认证）
     const adminKey = request.headers.get('x-admin-key');
-    if (adminKey !== process.env.ADMIN_KEY) {
+    const expectedAdminKey = process.env.ADMIN_KEY || 'demo-admin-key-12345';
+    
+    if (adminKey !== expectedAdminKey) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

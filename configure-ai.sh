@@ -106,3 +106,4 @@ echo "curl -X POST http://localhost:3000/api/generate/image \\"
 echo "  -F \"prompt=anime figure, 3d model, high quality\" \\"
 echo "  -F \"service=stability\""
 
+

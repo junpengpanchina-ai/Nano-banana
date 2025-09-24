@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 // AI服务配置
 const AI_SERVICES = {
@@ -130,6 +131,7 @@ export async function POST(request: NextRequest) {
     const prompt = form.get("prompt") as string;
     const service = form.get("service") as string || "grsai";
     const options = form.get("options") ? JSON.parse(form.get("options") as string) : {};
+    const userId = (form.get("userId") as string) || ""; // 可选：客户端传入，服务端用 service role 写库
 
     // 清理输入
     const cleanPrompt = prompt ? prompt.trim() : "";
@@ -214,6 +216,30 @@ export async function POST(request: NextRequest) {
       options,
       createdAt: new Date().toISOString(),
     };
+
+    // 写入 generations（如提供 service role）
+    try {
+      const adminKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      if (adminKey && supabaseUrl && userId) {
+        const admin = createClient(supabaseUrl, adminKey);
+        const { error: insertErr } = await admin
+          .from('generations')
+          .insert({
+            user_id: userId,
+            prompt: cleanPrompt || '',
+            style: options?.style || 'default',
+            pose: options?.pose || 'default',
+            result_url: imageUrl,
+            status: 'completed'
+          });
+        if (insertErr) {
+          console.error('Insert generation error:', insertErr);
+        }
+      }
+    } catch (dbErr) {
+      console.error('Save generation failed:', dbErr);
+    }
 
     return NextResponse.json(result);
   } catch (e) {

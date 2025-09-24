@@ -18,24 +18,7 @@ function negotiate(req: NextRequest): string {
 }
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-  // Ignore static, api, and already localized paths
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next()
-  }
-
-  const hasLocale = SUPPORTED.some(l => pathname === `/${l}` || pathname.startsWith(`/${l}/`))
-  if (!hasLocale) {
-    const locale = negotiate(req)
-    const url = req.nextUrl.clone()
-    url.pathname = `/${locale}${pathname}`
-    return NextResponse.redirect(url)
-  }
-
+  // 暂时禁用基于中间件的语言重定向，避免开发环境下静态资源404
   return NextResponse.next()
 }
 

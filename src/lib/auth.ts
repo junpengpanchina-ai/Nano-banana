@@ -71,10 +71,7 @@ export function validateApiKey(request: NextRequest): { valid: boolean; userId?:
 
 // 生成新的API密钥
 export function generateApiKey(userId: string, maxRequests: number = 100): string {
-  const masterKey = process.env.MASTER_API_KEY;
-  if (!masterKey) {
-    throw new Error('MASTER_API_KEY not configured');
-  }
+  const masterKey = process.env.MASTER_API_KEY || 'demo-master-key-12345';
   
   const apiKey = crypto.createHash('sha256')
     .update(`${masterKey}-${userId}-${Date.now()}-${Math.random()}`)

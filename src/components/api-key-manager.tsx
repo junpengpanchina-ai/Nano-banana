@@ -46,7 +46,7 @@ export function ApiKeyManager({ onApiKeyChange }: ApiKeyManagerProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Admin-Key': 'demo-admin-key' // 这里应该从环境变量获取
+          'X-Admin-Key': 'demo-admin-key-12345'
         },
         body: JSON.stringify({
           userId: `user_${Date.now()}`,

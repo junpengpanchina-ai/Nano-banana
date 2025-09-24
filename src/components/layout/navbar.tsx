@@ -3,20 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/components/i18n/i18n-context";
+import { useAuth } from "@/components/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Zap } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useI18n();
+  const { user, logout } = useAuth();
+  const avatarInitial = user ? (user.name?.[0] || user.email?.[0] || 'U').toUpperCase() : 'U';
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -78,6 +82,67 @@ export function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center space-x-4">
             <LanguageSwitcher />
+            
+            {user ? (
+              <div className="flex items-center space-x-3">
+                {/* 积分显示 */}
+                <div className="flex items-center space-x-1 text-sm text-gray-600">
+                  <Zap className="w-4 h-4 text-yellow-500" />
+                  <span>{user.credits}</span>
+                </div>
+                
+                {/* 用户菜单 */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {avatarInitial}
+                      </div>
+                      <span className="text-sm font-medium">{user.name}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-3 py-2">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <Link href="/my-images">
+                      <DropdownMenuItem>
+                        我的作品
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/viewer">
+                      <DropdownMenuItem>
+                        3D 预览
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Settings className="w-4 h-4 mr-2" />
+                      设置
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      退出登录
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    登录
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button size="sm">
+                    注册
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}

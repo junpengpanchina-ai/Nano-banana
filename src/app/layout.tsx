@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { I18nProvider } from "@/components/i18n/i18n-context";
+import { AuthProvider } from "@/components/auth/auth-context";
 import { Footer } from "@/components/layout/footer";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Nano Banana - AI人物手办生成平台",
@@ -20,28 +19,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <head>
-        {/* hreflang alternates */}
-        <link rel="alternate" hrefLang="zh-CN" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-CN`} />
-        <link rel="alternate" hrefLang="zh-TW" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-TW`} />
-        <link rel="alternate" hrefLang="en" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/en`} />
-        <link rel="alternate" hrefLang="ja" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ja`} />
-        <link rel="alternate" hrefLang="ko" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ko`} />
-        <link rel="alternate" hrefLang="es" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/es`} />
-        <link rel="alternate" hrefLang="fr" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/fr`} />
-        <link rel="alternate" hrefLang="de" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/de`} />
-        <link rel="alternate" hrefLang="ru" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/ru`} />
-        <link rel="alternate" hrefLang="x-default" href={`${process.env.NEXT_PUBLIC_APP_URL || ''}/zh-CN`} />
-      </head>
-      <body className={inter.className}>
+      <head></head>
+      <body>
         <I18nProvider>
-          <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <Navbar />
-            <main className="container mx-auto px-4 py-8">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <AuthProvider>
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+              <Navbar />
+              <main className="container mx-auto px-4 py-8">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </AuthProvider>
         </I18nProvider>
       </body>
     </html>

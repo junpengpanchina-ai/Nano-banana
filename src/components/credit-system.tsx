@@ -15,6 +15,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useI18n } from "@/components/i18n/i18n-context";
+import { useAuth } from "@/components/auth/auth-context";
 import { formatNumber, formatRelativeTime } from "@/lib/i18n-utils";
 
 interface CreditSystemProps {
@@ -26,6 +27,7 @@ interface CreditSystemProps {
 
 export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating }: CreditSystemProps) {
   const { t, locale } = useI18n();
+  const { user } = useAuth();
   const [nextFreeCredit, setNextFreeCredit] = useState(0);
 
   // 模拟每日免费积分倒计时
@@ -47,6 +49,36 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
     }
   };
 
+  // 领取每日免费积分
+  const handleClaimDailyFree = () => {
+    if (nextFreeCredit > 0) {
+      alert('请等待冷却时间结束');
+      return;
+    }
+    
+    // 添加5个积分
+    onCreditsChange(credits + 5);
+    
+    // 设置24小时冷却时间
+    setNextFreeCredit(24 * 3600); // 24小时 = 86400秒
+    
+    alert('成功领取5个免费积分！');
+  };
+
+  // 邀请好友
+  const handleInviteFriends = () => {
+    // 生成邀请链接
+    const inviteCode = `INVITE_${Date.now()}`;
+    const inviteLink = `${window.location.origin}?ref=${inviteCode}`;
+    
+    // 复制邀请链接到剪贴板
+    navigator.clipboard.writeText(inviteLink).then(() => {
+      alert(`邀请链接已复制到剪贴板：\n${inviteLink}\n\n好友注册成功后，你将获得10积分奖励！`);
+    }).catch(() => {
+      alert(`邀请链接：\n${inviteLink}\n\n请手动复制此链接发送给好友，好友注册成功后，你将获得10积分奖励！`);
+    });
+  };
+
   const getCreditStatus = () => {
     if (credits >= 10) return { color: "bg-green-500", text: t('credits.status.sufficient') };
     if (credits >= 5) return { color: "bg-yellow-500", text: t('credits.status.moderate') };
@@ -55,6 +87,33 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
   };
 
   const status = getCreditStatus();
+
+  // 如果用户未登录，显示登录提示
+  if (!user) {
+    return (
+      <div className="space-y-4">
+        <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">需要登录</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                登录后即可使用积分系统，获取免费积分和更多功能
+              </p>
+              <a 
+                href="/login"
+                className="inline-flex items-center justify-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-md transition-colors"
+              >
+                立即登录
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -104,6 +163,7 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
               </div>
               <Button 
                 size="sm"
+                onClick={handleClaimDailyFree}
                 disabled={nextFreeCredit > 0}
                 className="bg-green-500 hover:bg-green-600 text-white"
               >
@@ -122,7 +182,12 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
                   <p className="text-xs text-gray-600 truncate">{t('credits.inviteReward')}</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="border-purple-300 text-purple-700">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleInviteFriends}
+                className="border-purple-300 text-purple-700"
+              >
                 {t('credits.invite')}
               </Button>
             </div>

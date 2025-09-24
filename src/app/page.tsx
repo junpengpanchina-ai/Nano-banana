@@ -23,17 +23,21 @@ import {
 import { ModelViewer } from "@/components/3d-viewer";
 import { CreditSystem } from "@/components/credit-system";
 import { useI18n } from "@/components/i18n/i18n-context";
+import { useAuth } from "@/components/auth/auth-context";
 import { ApiKeyManager } from "@/components/api-key-manager";
 
 export default function HomePage() {
   const { t } = useI18n();
+  const { user, updateCredits } = useAuth();
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("");
   const [pose, setPose] = useState("");
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<{url: string, name: string} | null>(null);
-  const [credits, setCredits] = useState(5);
+  
+  // 使用用户积分，如果没有登录则使用默认值
+  const credits = user?.credits || 5;
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -92,7 +96,10 @@ export default function HomePage() {
               url: result.url,
               name: result.name || "生成的手办模型"
             });
-            setCredits(prev => prev - 2);
+            // 更新用户积分
+            if (user) {
+              updateCredits(credits - 2);
+            }
             return 100;
           }
           return prev + 10;
@@ -108,7 +115,9 @@ export default function HomePage() {
   };
 
   const handleCreditsChange = (newCredits: number) => {
-    setCredits(newCredits);
+    if (user) {
+      updateCredits(newCredits);
+    }
   };
 
   const handleImageSelect = async (file: File) => {

@@ -25,6 +25,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useI18n } from "@/components/i18n/i18n-context";
 import { formatDate } from "@/lib/i18n-utils";
+import { supabase } from "@/lib/supabase";
+import { SupabaseAuthService } from "@/lib/supabase-auth";
 
 interface GeneratedImage {
   id: string;
@@ -49,68 +51,50 @@ export default function MyImagesPage() {
   const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 模拟数据加载
+  // 加载当前用户的 generations
   useEffect(() => {
-    const mockImages: GeneratedImage[] = [
-      {
-        id: "1",
-        url: "https://picsum.photos/400/400?random=1",
-        name: "动漫风格女孩",
-        description: "一个穿着蓝色连衣裙的可爱女孩，动漫风格，站立姿势",
-        style: "anime",
-        pose: "standing",
-        createdAt: "2024-12-01T10:30:00Z",
-        credits: 2,
-        likes: 15,
-        downloads: 8,
-        tags: ["动漫", "女孩", "蓝色", "连衣裙"]
-      },
-      {
-        id: "2",
-        url: "https://picsum.photos/400/400?random=2",
-        name: "写实风格男性",
-        description: "一个穿着西装的成熟男性，写实风格，坐姿",
-        style: "realistic",
-        pose: "sitting",
-        createdAt: "2024-12-01T09:15:00Z",
-        credits: 2,
-        likes: 23,
-        downloads: 12,
-        tags: ["写实", "男性", "西装", "商务"]
-      },
-      {
-        id: "3",
-        url: "https://picsum.photos/400/400?random=3",
-        name: "Q版可爱角色",
-        description: "一个Q版风格的可爱角色，卡通风格，可爱姿势",
-        style: "chibi",
-        pose: "cute",
-        createdAt: "2024-11-30T16:45:00Z",
-        credits: 2,
-        likes: 31,
-        downloads: 19,
-        tags: ["Q版", "可爱", "卡通", "萌系"]
-      },
-      {
-        id: "4",
-        url: "https://picsum.photos/400/400?random=4",
-        name: "动作姿势角色",
-        description: "一个摆出动作姿势的角色，动漫风格，动作姿势",
-        style: "anime",
-        pose: "action",
-        createdAt: "2024-11-30T14:20:00Z",
-        credits: 2,
-        likes: 18,
-        downloads: 6,
-        tags: ["动漫", "动作", "动态", "酷炫"]
-      }
-    ];
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        const userRes = await SupabaseAuthService.getCurrentUser();
+        if (!userRes.success || !userRes.user) {
+          setImages([]);
+          setFilteredImages([]);
+          setIsLoading(false);
+          return;
+        }
+        const userId = userRes.user.id;
+        const { data, error } = await supabase
+          .from('generations')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+        if (error) throw error;
 
-    setTimeout(() => {
-      setImages(mockImages);
-      setFilteredImages(mockImages);
-      setIsLoading(false);
-    }, 1000);
+        const mapped: GeneratedImage[] = (data || []).map((g: any) => ({
+          id: g.id,
+          url: g.result_url || "",
+          name: g.style ? `${g.style}` : (g.prompt?.slice(0, 24) || '生成作品'),
+          description: g.prompt || '',
+          style: g.style || '',
+          pose: g.pose || '',
+          createdAt: g.created_at,
+          credits: 0,
+          likes: 0,
+          downloads: 0,
+          tags: [g.style, g.pose].filter(Boolean),
+        }));
+        setImages(mapped);
+        setFilteredImages(mapped);
+      } catch (e) {
+        console.error('Load generations error:', e);
+        setImages([]);
+        setFilteredImages([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
   }, []);
 
   // 搜索和过滤
