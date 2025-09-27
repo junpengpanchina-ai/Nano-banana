@@ -1,18 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://demo-project.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'demo-key-12345'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// 检查环境变量是否配置
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  console.warn('⚠️ Supabase环境变量未配置，使用默认值。请配置 .env.local 文件。')
+// 严格检查环境变量：生产环境缺失则直接报错；开发环境缺失则使用演示配置继续运行
+if (!supabaseUrl || !supabaseAnonKey) {
+  const message = 'Supabase环境变量缺失：请在 .env.local 配置 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_ANON_KEY'
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(message)
+  } else {
+    console.warn(`⚠️ ${message}（开发环境将使用演示配置，仅用于本地调试）`)
+  }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+const effectiveSupabaseUrl = supabaseUrl || 'https://demo-project.supabase.co'
+const effectiveSupabaseAnonKey = supabaseAnonKey || 'demo-key-12345'
+
+export const supabase = createClient(effectiveSupabaseUrl, effectiveSupabaseAnonKey, {
   global: {
     headers: {
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${supabaseAnonKey}`,
+      apikey: effectiveSupabaseAnonKey,
+      Authorization: `Bearer ${effectiveSupabaseAnonKey}`,
     },
   },
 })
