@@ -276,9 +276,9 @@ export class SupabaseAuthService {
     }
 
     try {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
       
-      if (!authUser) {
+      if (authError || !authUser) {
         return { success: false, user: null }
       }
 

@@ -116,3 +116,4 @@ UPDATE users SET credits = 100 WHERE email = 'user@example.com';
 - [Supabase文档](https://supabase.com/docs)
 - [Supabase社区](https://github.com/supabase/supabase/discussions)
 
+

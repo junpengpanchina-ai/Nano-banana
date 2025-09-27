@@ -15,7 +15,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useI18n } from "@/components/i18n/i18n-context";
-import { useAuth } from "@/components/auth/auth-context";
+import { useSmartAuth } from "@/components/auth/smart-auth-context";
 import { formatNumber, formatRelativeTime } from "@/lib/i18n-utils";
 
 interface CreditSystemProps {
@@ -27,7 +27,7 @@ interface CreditSystemProps {
 
 export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating }: CreditSystemProps) {
   const { t, locale } = useI18n();
-  const { user } = useAuth();
+  const { user } = useSmartAuth();
   const [nextFreeCredit, setNextFreeCredit] = useState(0);
 
   // 模拟每日免费积分倒计时

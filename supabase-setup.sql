@@ -77,3 +77,4 @@ INSERT INTO users (id, email, name, credits) VALUES
   ('00000000-0000-0000-0000-000000000002', 'test@example.com', '测试用户', 5)
 ON CONFLICT (email) DO NOTHING;
 
+

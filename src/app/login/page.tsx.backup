@@ -1,0 +1,105 @@
+"use client";
+
+import { useSmartAuth } from '@/components/auth/smart-auth-context';
+import { SmartLoginForm } from '@/components/auth/smart-login-form';
+import { BehaviorAnalyzer } from '@/components/auth/behavior-analyzer';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+export default function LoginPage() {
+  const { user, loading } = useSmartAuth();
+  const router = useRouter();
+  const [showBehaviorAnalysis, setShowBehaviorAnalysis] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) {
+      // 如果已经登录，重定向到首页
+      router.push('/');
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">加载中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null; // 重定向中
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <span className="text-white font-bold text-2xl">B</span>
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+            Nano Banana
+          </h1>
+          <p className="text-gray-600 text-lg">AI驱动的智能认证平台</p>
+          <p className="text-sm text-gray-500 mt-1">体验世界级的用户认证系统</p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* 智能登录表单 */}
+          <div className="order-2 lg:order-1">
+            <SmartLoginForm 
+              onSuccess={() => {
+                router.push('/');
+              }}
+            />
+          </div>
+          
+          {/* 行为分析器 */}
+          <div className="order-1 lg:order-2">
+            <BehaviorAnalyzer 
+              isActive={true}
+              onAnalysisComplete={(data) => {
+                console.log('Behavior analysis complete:', data);
+              }}
+            />
+            
+            {/* 高级功能提示 */}
+            <div className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="text-2xl">✨</span>
+                智能认证特性
+              </h3>
+              <div className="space-y-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>AI驱动的登录建议</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span>实时行为分析</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                  <span>语音识别登录</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  <span>生物识别支持</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span>智能风险评估</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+

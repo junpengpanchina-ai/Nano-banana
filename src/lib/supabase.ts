@@ -17,12 +17,11 @@ const effectiveSupabaseUrl = supabaseUrl || 'https://demo-project.supabase.co'
 const effectiveSupabaseAnonKey = supabaseAnonKey || 'demo-key-12345'
 
 export const supabase = createClient(effectiveSupabaseUrl, effectiveSupabaseAnonKey, {
-  global: {
-    headers: {
-      apikey: effectiveSupabaseAnonKey,
-      Authorization: `Bearer ${effectiveSupabaseAnonKey}`,
-    },
-  },
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
 })
 
 // 数据库表类型定义

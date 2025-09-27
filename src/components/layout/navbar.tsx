@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/components/i18n/i18n-context";
-import { useAuth } from "@/components/auth/auth-context";
+import { useSmartAuth } from "@/components/auth/smart-auth-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -19,7 +19,7 @@ import { LanguageSwitcher } from "@/components/layout/language-switcher";
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useI18n();
-  const { user, logout } = useAuth();
+  const { user, logout } = useSmartAuth();
   const avatarInitial = user ? (user.name?.[0] || user.email?.[0] || 'U').toUpperCase() : 'U';
 
   return (

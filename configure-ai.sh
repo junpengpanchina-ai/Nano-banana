@@ -107,3 +107,4 @@ echo "  -F \"prompt=anime figure, 3d model, high quality\" \\"
 echo "  -F \"service=stability\""
 
 
+

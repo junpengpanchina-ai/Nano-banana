@@ -23,12 +23,12 @@ import {
 import { ModelViewer } from "@/components/3d-viewer";
 import { CreditSystem } from "@/components/credit-system";
 import { useI18n } from "@/components/i18n/i18n-context";
-import { useAuth } from "@/components/auth/auth-context";
+import { useSmartAuth } from "@/components/auth/smart-auth-context";
 import { ApiKeyManager } from "@/components/api-key-manager";
 
 export default function HomePage() {
   const { t } = useI18n();
-  const { user, updateCredits } = useAuth();
+  const { user, updateCredits } = useSmartAuth();
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("");
   const [pose, setPose] = useState("");
