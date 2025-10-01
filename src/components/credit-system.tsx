@@ -12,10 +12,13 @@ import {
   Zap, 
   Star,
   Crown,
-  Sparkles
+  Sparkles,
+  CreditCard,
+  ShoppingCart
 } from "lucide-react";
 import { useI18n } from "@/components/i18n/i18n-context";
 import { useSmartAuth } from "@/components/auth/smart-auth-context";
+import { useMembership } from "@/components/payment/membership-provider";
 import { formatNumber, formatRelativeTime } from "@/lib/i18n-utils";
 
 interface CreditSystemProps {
@@ -28,6 +31,7 @@ interface CreditSystemProps {
 export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating }: CreditSystemProps) {
   const { t, locale } = useI18n();
   const { user } = useSmartAuth();
+  const { openMembershipModal } = useMembership();
   const [nextFreeCredit, setNextFreeCredit] = useState(0);
 
   // 模拟每日免费积分倒计时
@@ -171,24 +175,24 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
               </Button>
             </div>
 
-            {/* 邀请好友 */}
-            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200 md:col-span-2">
+            {/* 付费购买积分 */}
+            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 md:col-span-2">
               <div className="flex items-center space-x-3 min-w-0">
-                <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                  <Star className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <CreditCard className="w-4 h-4 text-white" />
                 </div>
                 <div className="truncate">
-                  <h4 className="font-medium text-gray-900 text-sm truncate">{t('credits.inviteFriends')}</h4>
-                  <p className="text-xs text-gray-600 truncate">{t('credits.inviteReward')}</p>
+                  <h4 className="font-medium text-gray-900 text-sm truncate">付费购买积分</h4>
+                  <p className="text-xs text-gray-600 truncate">直接付费获得更多积分，无需看广告</p>
                 </div>
               </div>
               <Button 
-                variant="outline" 
                 size="sm" 
-                onClick={handleInviteFriends}
-                className="border-purple-300 text-purple-700"
+                onClick={openMembershipModal}
+                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
               >
-                {t('credits.invite')}
+                <ShoppingCart className="w-4 h-4 mr-1" />
+                立即购买
               </Button>
             </div>
           </div>

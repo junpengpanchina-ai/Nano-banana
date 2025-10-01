@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/components/i18n/i18n-context";
 import { useSmartAuth } from "@/components/auth/smart-auth-context";
+import { useMembership } from "@/components/payment/membership-provider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -13,13 +14,14 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, User, LogOut, Settings, Zap } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Zap, Crown } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useI18n();
   const { user, logout } = useSmartAuth();
+  const { openMembershipModal } = useMembership();
   const avatarInitial = user ? (user.name?.[0] || user.email?.[0] || 'U').toUpperCase() : 'U';
 
   return (
@@ -75,7 +77,15 @@ export function Navbar() {
             <Link href="/prompts">
               <Button variant="ghost">{t("nav.prompts")}</Button>
             </Link>
-            {/* 隐藏：定价 */}
+            <Link href="/pricing">
+              <Button variant="ghost">定价</Button>
+            </Link>
+            <Link href="/china-payment">
+              <Button variant="ghost">中国支付</Button>
+            </Link>
+            <Link href="/alipay-test">
+              <Button variant="ghost">支付宝测试</Button>
+            </Link>
             {/* 隐藏：我的作品 / API */}
           </div>
 
@@ -90,6 +100,16 @@ export function Navbar() {
                   <Zap className="w-4 h-4 text-yellow-500" />
                   <span>{user.credits}</span>
                 </div>
+                
+                {/* 快速购买按钮 */}
+                <Button 
+                  size="sm" 
+                  onClick={openMembershipModal}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                >
+                  <Crown className="w-4 h-4 mr-1" />
+                  充值
+                </Button>
                 
                 {/* 用户菜单 */}
                 <DropdownMenu>
@@ -168,6 +188,12 @@ export function Navbar() {
               </Link>
               <Link href="/pricing" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
                 定价
+              </Link>
+              <Link href="/china-payment" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                中国支付
+              </Link>
+              <Link href="/alipay-test" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                支付宝测试
               </Link>
               {/* 隐藏：我的作品 / API */}
               <div className="pt-2 border-t" />

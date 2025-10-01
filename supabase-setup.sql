@@ -78,3 +78,9 @@ INSERT INTO users (id, email, name, credits) VALUES
 ON CONFLICT (email) DO NOTHING;
 
 
+
+
+
+
+
+

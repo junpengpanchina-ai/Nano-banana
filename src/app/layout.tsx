@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { I18nProvider } from "@/components/i18n/i18n-context";
 import { SmartAuthProvider } from "@/components/auth/smart-auth-context";
+import { MembershipProvider } from "@/components/payment/membership-provider";
 import { Footer } from "@/components/layout/footer";
 
 
@@ -23,13 +24,15 @@ export default function RootLayout({
       <body>
         <I18nProvider>
           <SmartAuthProvider>
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-              <Navbar />
-              <main className="container mx-auto px-4 py-8">
-                {children}
-              </main>
-              <Footer />
-            </div>
+            <MembershipProvider>
+              <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+                <Navbar />
+                <main className="container mx-auto px-4 py-8">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </MembershipProvider>
           </SmartAuthProvider>
         </I18nProvider>
       </body>

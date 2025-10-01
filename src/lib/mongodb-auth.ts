@@ -154,3 +154,20 @@ export async function updateUserCredits(userId: string, credits: number): Promis
     return false
   }
 }
+
+export async function incrementUserCredits(userId: string, delta: number): Promise<boolean> {
+  try {
+    const { db } = await connectToDatabase()
+    await db.collection(COLLECTIONS.USERS).updateOne(
+      { _id: userId as any },
+      { 
+        $inc: { credits: delta },
+        $set: { updated_at: new Date() }
+      }
+    )
+    return true
+  } catch (error) {
+    console.error('增量更新积分失败:', error)
+    return false
+  }
+}

@@ -46,6 +46,30 @@ export interface ApiLog {
   created_at: Date
 }
 
+export interface Payment {
+  _id?: string
+  provider: 'lemonsqueezy' | 'alipay' | 'stripe' | 'wechat' | 'yeepay'
+  provider_order_id?: string
+  identifier?: string // idempotency key from provider
+  user_id: string
+  amount_cents: number
+  currency?: string
+  status: 'pending' | 'paid' | 'refunded' | 'failed'
+  raw?: any
+  created_at: Date
+  updated_at: Date
+}
+
+export interface LedgerEntry {
+  _id?: string
+  user_id: string
+  delta: number // positive or negative credits
+  reason: string
+  source: 'webhook' | 'admin' | 'system'
+  ref?: string // related payment identifier/order id/admin note
+  created_at: Date
+}
+
 // 创建索引的辅助函数
 export const createIndexes = async (db: any) => {
   try {
@@ -66,11 +90,21 @@ export const createIndexes = async (db: any) => {
     await db.collection('logs').createIndex({ created_at: -1 })
     await db.collection('logs').createIndex({ user_id: 1 })
     await db.collection('logs').createIndex({ api_key: 1 })
+
+    // 支付索引
+    await db.collection('payments').createIndex({ identifier: 1 }, { unique: true, sparse: true })
+    await db.collection('payments').createIndex({ provider: 1, provider_order_id: 1 })
+    await db.collection('payments').createIndex({ user_id: 1 })
+    await db.collection('payments').createIndex({ created_at: -1 })
+
+    // 积分流水索引
+    await db.collection('ledger').createIndex({ user_id: 1, created_at: -1 })
     
     console.log('✅ MongoDB索引创建成功')
   } catch (error) {
     console.error('❌ 创建索引失败:', error)
   }
 }
+
 
 

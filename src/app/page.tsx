@@ -164,16 +164,16 @@ export default function HomePage() {
         </div>
 
         {/* Promotional Banner */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 max-w-2xl mx-auto">
           <div className="flex items-center justify-center space-x-4 text-sm">
             <span className="flex items-center space-x-1">
-              <Sparkles className="w-4 h-4 text-blue-600" />
-              <span className="text-blue-800 font-medium">{t("banner.left")}</span>
+              <Sparkles className="w-4 h-4 text-green-600" />
+              <span className="text-green-800 font-medium">付费购买积分</span>
             </span>
             <span className="text-gray-400">•</span>
             <span className="flex items-center space-x-1">
-              <Zap className="w-4 h-4 text-purple-600" />
-              <span className="text-purple-800 font-medium">{t("banner.right")}</span>
+              <Zap className="w-4 h-4 text-blue-600" />
+              <span className="text-blue-800 font-medium">无需看广告</span>
             </span>
           </div>
         </div>
