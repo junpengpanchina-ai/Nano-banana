@@ -1,39 +1,21 @@
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-// 严格检查：生产环境必须配置；开发环境警告并回退到演示配置
-if (!supabaseUrl || !serviceRoleKey) {
-  const message = 'Supabase Admin 环境未完整配置：需要 NEXT_PUBLIC_SUPABASE_URL 与 SUPABASE_SERVICE_ROLE_KEY'
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error(message)
-  } else {
-    console.warn(`⚠️ ${message}（开发环境将使用演示配置，仅用于本地调试）`)
-  }
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Missing Supabase URL or Service Role Key')
 }
 
-const effectiveAdminUrl = supabaseUrl || 'https://demo-project.supabase.co'
-const effectiveServiceKey = serviceRoleKey || 'demo-service-role-key'
-
-export const supabaseAdmin = createClient(effectiveAdminUrl, effectiveServiceKey, {
+// 使用 Service Role Key 的 Supabase 客户端，用于服务端操作
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
-    persistSession: false,
     autoRefreshToken: false,
+    persistSession: false
   },
   global: {
     headers: {
-      apikey: effectiveServiceKey,
-      Authorization: `Bearer ${effectiveServiceKey}`,
-    },
-  },
+      'Content-Type': 'application/json; charset=utf-8'
+    }
+  }
 })
-
-export type AdminActionResult<T = any> = {
-  success: boolean
-  data?: T
-  error?: string
-  total?: number
-}
-
-

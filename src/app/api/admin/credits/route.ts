@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adjustUserCredits } from '@/lib/mock-payment-gateways'
+import { adjustUserCredits } from '@/lib/supabase-payment-gateways'
 
 export async function POST(req: NextRequest) {
   const adminKey = req.headers.get('x-admin-key') || ''

@@ -1,4 +1,4 @@
-import { listRecentPayments } from '@/lib/mock-payment-gateways'
+import { listRecentPayments } from '@/lib/supabase-payment-gateways'
 
 type PaymentRow = {
   _id: string

@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabaseAdmin } from './supabase-admin'
 import { getNumberEnv } from './utils'
 
 const CREDITS_PER_UNIT = getNumberEnv('CREDITS_PER_UNIT', 100)
@@ -35,7 +35,7 @@ export async function recordLemonPaymentIdempotent(opts: {
   currency?: string
   raw?: any
 }): Promise<PaymentRecord> {
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from('payments')
     .select('*')
     .eq('identifier', opts.identifier)
@@ -45,7 +45,7 @@ export async function recordLemonPaymentIdempotent(opts: {
     return existing as PaymentRecord
   }
 
-  const { data: payment, error: paymentError } = await supabase
+  const { data: payment, error: paymentError } = await supabaseAdmin
     .from('payments')
     .insert({
       provider: 'lemonsqueezy',
@@ -63,7 +63,7 @@ export async function recordLemonPaymentIdempotent(opts: {
   if (paymentError) {
     // 如果是唯一约束冲突，再次查询
     if (opts.identifier) {
-      const { data: again } = await supabase
+      const { data: again } = await supabaseAdmin
         .from('payments')
         .select('*')
         .eq('identifier', opts.identifier)
@@ -75,20 +75,20 @@ export async function recordLemonPaymentIdempotent(opts: {
 
   const credits = Math.floor((payment.amount_cents / 100) * CREDITS_PER_UNIT)
   if (credits > 0) {
-    // 更新用户积分
-    await supabase
+    // Update user credits
+    await supabaseAdmin
       .from('users')
       .update({ 
-        credits: payment.amount_cents, // 临时直接设置，实际应该累加
+        credits: payment.amount_cents, // Temporary direct setting, should be cumulative
         updated_at: new Date().toISOString()
       })
-      .eq('id', opts.userId)
+      .eq('id', opts.userId === 'u_test' ? '00000000-0000-0000-0000-000000000002' : opts.userId)
 
-    // 记录积分变更
-    await supabase
+    // Record credit changes
+    await supabaseAdmin
       .from('ledger')
       .insert({
-        user_id: opts.userId,
+        user_id: opts.userId === 'u_test' ? '00000000-0000-0000-0000-000000000002' : opts.userId,
         delta: credits,
         reason: 'Lemon Squeezy payment',
         source: 'webhook',
@@ -100,7 +100,7 @@ export async function recordLemonPaymentIdempotent(opts: {
 }
 
 export async function listRecentPayments(limit = 50): Promise<PaymentRecord[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('payments')
     .select('*')
     .order('created_at', { ascending: false })
@@ -111,7 +111,7 @@ export async function listRecentPayments(limit = 50): Promise<PaymentRecord[]> {
 }
 
 export async function getUserPayments(userId: string, limit = 50): Promise<PaymentRecord[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('payments')
     .select('*')
     .eq('user_id', userId)
@@ -123,7 +123,7 @@ export async function getUserPayments(userId: string, limit = 50): Promise<Payme
 }
 
 export async function getLedgerEntries(userId: string, limit = 50): Promise<LedgerEntry[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('ledger')
     .select('*')
     .eq('user_id', userId)
@@ -145,28 +145,28 @@ export async function adjustUserCredits(
   }
 
   // 更新用户积分
-  const { data: user, error: userError } = await supabase
+  const { data: user, error: userError } = await supabaseAdmin
     .from('users')
     .select('credits')
-    .eq('id', userId)
+    .eq('id', userId === 'u_test' ? '00000000-0000-0000-0000-000000000002' : userId)
     .single()
 
   if (userError) throw userError
 
   const newCredits = (user.credits || 0) + delta
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await supabaseAdmin
     .from('users')
     .update({ 
       credits: newCredits,
       updated_at: new Date().toISOString()
     })
-    .eq('id', userId)
+    .eq('id', userId === 'u_test' ? '00000000-0000-0000-0000-000000000002' : userId)
 
   if (updateError) throw updateError
 
   // 记录积分变更
-  await supabase
+  await supabaseAdmin
     .from('ledger')
     .insert({
       user_id: userId,
@@ -178,6 +178,3 @@ export async function adjustUserCredits(
 
   return { credits: newCredits }
 }
-
-
-

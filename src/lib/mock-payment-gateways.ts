@@ -126,5 +126,3 @@ export async function adjustUserCredits(
   return { credits: totalCredits }
 }
 
-
-

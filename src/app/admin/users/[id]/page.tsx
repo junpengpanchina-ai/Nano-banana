@@ -1,4 +1,4 @@
-import { getUserPayments, getLedgerEntries } from '@/lib/mock-payment-gateways'
+import { getUserPayments, getLedgerEntries } from '@/lib/supabase-payment-gateways'
 import AdjustCreditsForm from './AdjustCreditsForm'
 
 export const dynamic = 'force-dynamic'
