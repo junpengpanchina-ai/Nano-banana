@@ -86,6 +86,19 @@ export function Navbar() {
             <Link href="/alipay-test">
               <Button variant="ghost">支付宝测试</Button>
             </Link>
+            <Link href="/lemon-test">
+              <Button variant="ghost" className="bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600">
+                🌍 全球支付
+              </Button>
+            </Link>
+            <Link href="/payment-demo">
+              <Button variant="ghost">支付演示</Button>
+            </Link>
+            <Link href="/payoneer-test">
+              <Button variant="ghost" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600">
+                🏦 Payoneer
+              </Button>
+            </Link>
             {/* 隐藏：我的作品 / API */}
           </div>
 
@@ -194,6 +207,15 @@ export function Navbar() {
               </Link>
               <Link href="/alipay-test" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
                 支付宝测试
+              </Link>
+              <Link href="/lemon-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-blue-500 rounded hover:from-green-600 hover:to-blue-600">
+                🌍 全球支付
+              </Link>
+              <Link href="/payment-demo" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                支付演示
+              </Link>
+              <Link href="/payoneer-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded hover:from-blue-600 hover:to-purple-600">
+                🏦 Payoneer
               </Link>
               {/* 隐藏：我的作品 / API */}
               <div className="pt-2 border-t" />

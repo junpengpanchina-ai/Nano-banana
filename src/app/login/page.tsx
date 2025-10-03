@@ -76,7 +76,7 @@ export default function WorkingLoginPage() {
       if (result.success) {
         console.log('登录成功');
         // 登录成功后跳转到首页
-        router.push('/');
+      router.push('/');
       } else {
         setError(result.error || '登录失败，请使用测试账户：tset123qq@example.com / 123123');
       }

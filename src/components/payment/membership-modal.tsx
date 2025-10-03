@@ -20,7 +20,9 @@ import {
   ShoppingCart,
   CreditCard as Alipay,
   Smartphone as Wechat,
-  Banknote
+  Banknote,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 
 interface MembershipPlan {
@@ -171,6 +173,13 @@ const membershipPlans: MembershipPlan[] = [
 
 const paymentMethods: PaymentMethod[] = [
   {
+    id: 'global',
+    name: '全球支付',
+    icon: <Globe className="h-6 w-6" />,
+    color: 'from-green-500 to-blue-600',
+    description: '支持全球200+国家/地区'
+  },
+  {
     id: 'alipay',
     name: '支付宝',
     icon: <Alipay className="h-6 w-6" />,
@@ -213,6 +222,41 @@ export function MembershipModal({
     if (!selectedPlan) return;
     
     setSelectedPayment(payment);
+    
+    // 如果是全球支付，直接跳转到 Lemon Squeezy
+    if (payment.id === 'global') {
+      try {
+        // 动态导入 Lemon Squeezy 服务
+        const { lemonSqueezyService } = await import('@/lib/lemon-squeezy');
+        
+        // 检查是否已配置
+        const status = await lemonSqueezyService.getPaymentStatus();
+        if (!status.isAvailable) {
+          throw new Error('全球支付服务暂未配置，请联系管理员');
+        }
+        
+        // 生成结账链接
+        const checkoutUrl = lemonSqueezyService.generateCheckoutUrl(
+          selectedPlan.id,
+          'current-user-id', // 这里应该从用户上下文获取
+          selectedPlan.credits
+        );
+        
+        // 打开新窗口进行支付
+        window.open(checkoutUrl, '_blank', 'width=600,height=700,scrollbars=yes,resizable=yes');
+        
+        // 关闭弹窗
+        handleClose();
+        
+      } catch (error) {
+        console.error('全球支付失败:', error);
+        const errorMessage = error instanceof Error ? error.message : '全球支付服务暂不可用';
+        alert(`支付失败: ${errorMessage}`);
+      }
+      return;
+    }
+    
+    // 其他支付方式的原有逻辑
     setStep('processing');
     setIsProcessing(true);
     
@@ -434,13 +478,26 @@ export function MembershipModal({
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {paymentMethods.map((method) => (
                   <Card 
                     key={method.id}
-                    className="cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-105 border-2 border-gray-200 hover:border-purple-200"
+                    className={`cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-105 border-2 ${
+                      method.id === 'global' 
+                        ? 'ring-4 ring-green-300 border-green-300 shadow-lg bg-gradient-to-br from-green-50 to-blue-50' 
+                        : 'border-gray-200 hover:border-purple-200'
+                    }`}
                     onClick={() => handleSelectPayment(method)}
                   >
+                    {method.id === 'global' && (
+                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-10">
+                        <Badge className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-3 py-1 text-xs font-semibold shadow-lg">
+                          <Globe className="h-3 w-3 mr-1" />
+                          推荐
+                        </Badge>
+                      </div>
+                    )}
+                    
                     <CardContent className="p-6 text-center space-y-4">
                       <div className={`w-16 h-16 mx-auto rounded-full bg-gradient-to-r ${method.color} flex items-center justify-center text-white shadow-lg`}>
                         {method.icon}
@@ -448,18 +505,39 @@ export function MembershipModal({
                       <div>
                         <h4 className="text-lg font-bold text-gray-900">{method.name}</h4>
                         <p className="text-sm text-gray-600 mt-1">{method.description}</p>
+                        {method.id === 'global' && (
+                          <div className="mt-2 text-xs text-green-700 bg-green-100 rounded-full px-3 py-1 inline-block">
+                            🌍 支持全球200+国家/地区
+                          </div>
+                        )}
                       </div>
-                      <Button 
-                        size="lg"
-                        onClick={() => {
-                          // 复制客服微信到剪贴板
-                          navigator.clipboard.writeText('nano_banana_service');
-                          alert('客服微信已复制到剪贴板：nano_banana_service');
-                        }}
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold shadow-lg"
-                      >
-                        联系客服充值
-                      </Button>
+                      
+                      {method.id === 'global' ? (
+                        <Button 
+                          size="lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectPayment(method);
+                          }}
+                          className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold shadow-lg"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          立即购买
+                        </Button>
+                      ) : (
+                        <Button 
+                          size="lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // 复制客服微信到剪贴板
+                            navigator.clipboard.writeText('nano_banana_service');
+                            alert('客服微信已复制到剪贴板：nano_banana_service');
+                          }}
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold shadow-lg"
+                        >
+                          联系客服充值
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
