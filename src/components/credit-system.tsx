@@ -26,9 +26,11 @@ interface CreditSystemProps {
   onCreditsChange: (credits: number) => void;
   onGenerate: () => void;
   isGenerating: boolean;
+  apiStatus?: string;
+  requestId?: string;
 }
 
-export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating }: CreditSystemProps) {
+export function CreditSystem({ credits, onCreditsChange, onGenerate, isGenerating, apiStatus, requestId }: CreditSystemProps) {
   const { t, locale } = useI18n();
   const { user } = useSmartAuth();
   const { openMembershipModal } = useMembership();
@@ -228,6 +230,22 @@ export function CreditSystem({ credits, onCreditsChange, onGenerate, isGeneratin
           <p className="text-sm text-gray-600 mt-2">
             {t('credits.insufficientCredits')}
           </p>
+        )}
+        
+        {/* API状态显示 */}
+        {apiStatus && (
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-blue-700 font-medium">API状态:</span>
+              <span className="text-sm text-blue-600">{apiStatus}</span>
+            </div>
+            {requestId && (
+              <div className="mt-1 text-xs text-blue-500">
+                请求ID: {requestId}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

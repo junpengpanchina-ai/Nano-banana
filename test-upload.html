@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>图片上传测试</title>
+</head>
+<body>
+    <h1>图片上传测试</h1>
+    
+    <form id="uploadForm">
+        <div>
+            <label>描述词:</label>
+            <input type="text" id="prompt" value="beautiful anime girl" />
+        </div>
+        
+        <div>
+            <label>图片文件:</label>
+            <input type="file" id="imageFile" accept="image/*" />
+        </div>
+        
+        <button type="submit">生成手办</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const prompt = document.getElementById('prompt').value;
+            const imageFile = document.getElementById('imageFile').files[0];
+            
+            console.log('提示词:', prompt);
+            console.log('图片文件:', imageFile);
+            
+            const formData = new FormData();
+            formData.append('prompt', prompt);
+            formData.append('service', 'grsai');
+            formData.append('options', JSON.stringify({
+                style: 'anime',
+                pose: 'standing'
+            }));
+            
+            if (imageFile) {
+                formData.append('file', imageFile);
+                console.log('✅ 图片已添加到FormData');
+            }
+            
+            try {
+                const response = await fetch('/api/generate/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer demo-key'
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                console.log('API响应:', result);
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>生成结果:</h3>
+                    <p><strong>提示词:</strong> ${result.prompt}</p>
+                    <p><strong>文件名:</strong> ${result.name}</p>
+                    <p><strong>文件大小:</strong> ${result.size} bytes</p>
+                    <p><strong>文件类型:</strong> ${result.type}</p>
+                    <p><strong>生成URL:</strong> <a href="${result.url}" target="_blank">${result.url}</a></p>
+                    <img src="${result.url}" alt="生成结果" style="max-width: 500px;" />
+                `;
+            } catch (error) {
+                console.error('错误:', error);
+                document.getElementById('result').innerHTML = `<p style="color: red;">错误: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
+

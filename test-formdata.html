@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormData测试</title>
+</head>
+<body>
+    <h1>FormData API测试</h1>
+    <form id="testForm">
+        <div>
+            <label>描述词:</label>
+            <input type="text" id="prompt" value="beautiful woman, anime figure" />
+        </div>
+        <div>
+            <label>服务:</label>
+            <select id="service">
+                <option value="grsai">Grsai</option>
+                <option value="stability">Stability AI</option>
+            </select>
+        </div>
+        <div>
+            <label>选项:</label>
+            <input type="text" id="options" value='{"style":"anime","pose":"standing"}' />
+        </div>
+        <div>
+            <label>图片文件:</label>
+            <input type="file" id="imageFile" accept="image/*" />
+        </div>
+        <button type="button" onclick="testAPI()">测试API调用</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '🔄 正在测试...';
+            
+            try {
+                // 创建FormData
+                const formData = new FormData();
+                formData.append('prompt', document.getElementById('prompt').value);
+                formData.append('service', document.getElementById('service').value);
+                formData.append('options', document.getElementById('options').value);
+                
+                const imageFile = document.getElementById('imageFile').files[0];
+                if (imageFile) {
+                    formData.append('file', imageFile);
+                    console.log('📸 添加图片文件:', imageFile.name, imageFile.size, 'bytes');
+                }
+                
+                console.log('📤 发送FormData请求...');
+                
+                // 调用API - 不设置Content-Type头
+                const response = await fetch('/api/generate/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer demo-key',
+                        // 注意：不设置Content-Type，让浏览器自动设置
+                    },
+                    body: formData
+                });
+                
+                console.log('📡 响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ API错误:', response.status, errorText);
+                    resultDiv.innerHTML = `❌ 错误 ${response.status}: ${errorText}`;
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('✅ API成功:', result);
+                
+                resultDiv.innerHTML = `
+                    <h3>✅ 测试成功！</h3>
+                    <p><strong>图片URL:</strong> <a href="${result.url}" target="_blank">${result.url}</a></p>
+                    <p><strong>提示词:</strong> ${result.prompt}</p>
+                    <p><strong>服务:</strong> ${result.service}</p>
+                    <p><strong>文件名:</strong> ${result.name}</p>
+                    <p><strong>文件大小:</strong> ${result.size} bytes</p>
+                    <p><strong>请求ID:</strong> ${result.id}</p>
+                `;
+                
+            } catch (error) {
+                console.error('❌ 测试失败:', error);
+                resultDiv.innerHTML = `❌ 测试失败: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
+

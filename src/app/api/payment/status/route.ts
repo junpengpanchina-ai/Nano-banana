@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     // 检查支付服务状态
     const paymentServiceStatus = {
       isAvailable: false, // 支付服务暂未开通
-      message: '支付服务正在开发中，请联系客服进行人工充值',
+      message: '支付功能正在开发中，请联系客服进行人工充值。客服微信：nano_banana_service',
       contactInfo: {
         wechat: 'nano_banana_service',
         email: 'support@nano-banana.com',

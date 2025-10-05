@@ -35,6 +35,8 @@ export default function HomePage() {
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<{url: string, name: string} | null>(null);
+  const [apiStatus, setApiStatus] = useState<string>('');
+  const [requestId, setRequestId] = useState<string>('');
   
   // 使用用户积分，如果没有登录则使用默认值
   const credits = user?.credits || 5;
@@ -47,14 +49,19 @@ export default function HomePage() {
     
     setGenerating(true);
     setProgress(0);
+    setApiStatus('准备调用API...');
+    setRequestId('');
     
     try {
       // 检查API密钥
       if (!apiKey) {
         alert('请先获取API密钥');
         setGenerating(false);
+        setApiStatus('');
         return;
       }
+
+      setApiStatus('正在创建请求...');
 
       // 创建FormData
       const formData = new FormData();
@@ -69,6 +76,9 @@ export default function HomePage() {
       if (imageFile) {
         formData.append('file', imageFile);
       }
+
+      setApiStatus('正在调用AI API...');
+      console.log('🚀 开始调用AI生成API');
 
       // 调用受保护的API
       const response = await fetch('/api/generate/image', {
@@ -85,6 +95,22 @@ export default function HomePage() {
       }
 
       const result = await response.json();
+      console.log('✅ API调用成功:', result);
+      
+      // 记录API调用历史
+      const apiCallHistory = {
+        timestamp: new Date().toISOString(),
+        requestId: result.requestId || '',
+        duration: result.duration || '未知时间',
+        service: 'grsai',
+        prompt: description,
+        success: true,
+        imageUrl: result.result_url || result.url
+      };
+      console.log('📊 API调用历史:', apiCallHistory);
+      
+      setRequestId(result.requestId || '');
+      setApiStatus(`API调用成功 (${result.duration || '未知时间'})`);
       
       // 模拟进度条
       const interval = setInterval(() => {
@@ -108,6 +134,7 @@ export default function HomePage() {
 
     } catch (error) {
       console.error('生成失败:', error);
+      setApiStatus(`API调用失败: ${error instanceof Error ? error.message : '未知错误'}`);
       alert(`生成失败: ${error instanceof Error ? error.message : '未知错误'}`);
       setGenerating(false);
       setProgress(0);
@@ -264,6 +291,8 @@ export default function HomePage() {
                   onCreditsChange={handleCreditsChange}
                   onGenerate={handleGenerate}
                   isGenerating={generating}
+                  apiStatus={apiStatus}
+                  requestId={requestId}
                 />
               </div>
 

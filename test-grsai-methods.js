@@ -1,6 +1,6 @@
 // 测试Grsai API的不同HTTP方法和格式
 const testGrsaiMethods = async () => {
-  const apiKey = 'sk-5f1e0d1f16984f3e86704bbb532357f9';
+  const apiKey = 'sk-bd625bca604243989a7018a67614c889';
   const userId = '1758354953';
   const username = 'bnana';
   

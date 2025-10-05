@@ -80,19 +80,23 @@ export function Navbar() {
             <Link href="/pricing">
               <Button variant="ghost">定价</Button>
             </Link>
-            <Link href="/china-payment">
-              <Button variant="ghost">中国支付</Button>
-            </Link>
-            <Link href="/alipay-test">
-              <Button variant="ghost">支付宝测试</Button>
-            </Link>
-            <Link href="/lemon-test">
+            <Link href="/lemon-test" className="hidden">
               <Button variant="ghost" className="bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600">
                 🌍 全球支付
               </Button>
             </Link>
             <Link href="/payment-demo">
               <Button variant="ghost">支付演示</Button>
+            </Link>
+            <Link href="/api-test">
+              <Button variant="ghost" className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600">
+                🎮 积分测试
+              </Button>
+            </Link>
+            <Link href="/figure-generate">
+              <Button variant="ghost" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600">
+                🎭 手办生成
+              </Button>
             </Link>
             <Link href="/payoneer-test">
               <Button variant="ghost" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600">
@@ -202,17 +206,17 @@ export function Navbar() {
               <Link href="/pricing" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
                 定价
               </Link>
-              <Link href="/china-payment" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                中国支付
-              </Link>
-              <Link href="/alipay-test" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
-                支付宝测试
-              </Link>
-              <Link href="/lemon-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-blue-500 rounded hover:from-green-600 hover:to-blue-600">
+              <Link href="/lemon-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-blue-500 rounded hover:from-green-600 hover:to-blue-600 hidden">
                 🌍 全球支付
               </Link>
               <Link href="/payment-demo" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">
                 支付演示
+              </Link>
+              <Link href="/api-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-yellow-500 to-orange-500 rounded hover:from-yellow-600 hover:to-orange-600">
+                🎮 积分测试
+              </Link>
+              <Link href="/figure-generate" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded hover:from-purple-600 hover:to-pink-600">
+                🎭 手办生成
               </Link>
               <Link href="/payoneer-test" className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded hover:from-blue-600 hover:to-purple-600">
                 🏦 Payoneer

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调试测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        img { max-width: 300px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>调试测试页面</h1>
+    
+    <div class="section">
+        <h2>1. 测试无图片生成</h2>
+        <button onclick="testWithoutImage()">生成手办（无图片）</button>
+        <div id="result1" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>2. 测试有图片生成</h2>
+        <input type="file" id="imageInput" accept="image/*" />
+        <button onclick="testWithImage()">生成手办（有图片）</button>
+        <div id="result2" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3. 控制台日志</h2>
+        <div id="logs" class="result"></div>
+    </div>
+    
+    <script>
+        function log(message) {
+            console.log(message);
+            document.getElementById('logs').innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+        
+        async function testWithoutImage() {
+            log('🚀 开始测试无图片生成');
+            
+            const formData = new FormData();
+            formData.append('prompt', 'beautiful anime girl');
+            formData.append('service', 'grsai');
+            formData.append('options', JSON.stringify({
+                style: 'anime',
+                pose: 'standing'
+            }));
+            
+            try {
+                const response = await fetch('/api/generate/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer demo-key'
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                log('✅ 无图片生成成功: ' + result.url);
+                
+                document.getElementById('result1').innerHTML = `
+                    <p><strong>提示词:</strong> ${result.prompt}</p>
+                    <p><strong>服务:</strong> ${result.service}</p>
+                    <p><strong>URL:</strong> <a href="${result.url}" target="_blank">${result.url}</a></p>
+                    <img src="${result.url}" alt="生成结果" />
+                `;
+            } catch (error) {
+                log('❌ 无图片生成失败: ' + error.message);
+                document.getElementById('result1').innerHTML = '<p style="color: red;">错误: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testWithImage() {
+            const imageFile = document.getElementById('imageInput').files[0];
+            if (!imageFile) {
+                alert('请先选择图片');
+                return;
+            }
+            
+            log('🚀 开始测试有图片生成');
+            log('📎 图片文件: ' + imageFile.name + ' (' + imageFile.size + ' bytes, ' + imageFile.type + ')');
+            
+            const formData = new FormData();
+            formData.append('prompt', 'beautiful anime girl');
+            formData.append('service', 'grsai');
+            formData.append('options', JSON.stringify({
+                style: 'anime',
+                pose: 'standing'
+            }));
+            formData.append('file', imageFile);
+            
+            try {
+                const response = await fetch('/api/generate/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer demo-key'
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                log('✅ 有图片生成成功: ' + result.url);
+                log('📎 文件名: ' + result.name + ', 大小: ' + result.size + ', 类型: ' + result.type);
+                
+                document.getElementById('result2').innerHTML = `
+                    <p><strong>提示词:</strong> ${result.prompt}</p>
+                    <p><strong>服务:</strong> ${result.service}</p>
+                    <p><strong>文件名:</strong> ${result.name}</p>
+                    <p><strong>文件大小:</strong> ${result.size} bytes</p>
+                    <p><strong>文件类型:</strong> ${result.type}</p>
+                    <p><strong>URL:</strong> <a href="${result.url}" target="_blank">${result.url}</a></p>
+                    <img src="${result.url}" alt="生成结果" />
+                `;
+            } catch (error) {
+                log('❌ 有图片生成失败: ' + error.message);
+                document.getElementById('result2').innerHTML = '<p style="color: red;">错误: ' + error.message + '</p>';
+            }
+        }
+        
+        // 页面加载时自动测试无图片生成
+        window.onload = function() {
+            log('📱 页面加载完成');
+            testWithoutImage();
+        };
+    </script>
+</body>
+</html>
+

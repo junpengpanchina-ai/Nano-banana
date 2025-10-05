@@ -46,9 +46,6 @@ export default function AlipayTestPage() {
             </Link>
             
             <div className="flex items-center space-x-4">
-              <Link href="/china-payment">
-                <Button variant="ghost">中国支付方案</Button>
-              </Link>
               <Link href="/">
                 <Button variant="ghost" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />

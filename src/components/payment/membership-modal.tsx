@@ -83,7 +83,7 @@ const createPaymentOrder = async (orderData: {
     // 目前返回失败，因为支付服务未开通
     return {
       success: false,
-      error: '支付服务暂未开通，请联系客服开通'
+      error: '支付服务暂未开通，请联系客服进行人工充值。客服微信：nano_banana_service'
     };
   } catch (error) {
     console.error('创建支付订单失败:', error);
@@ -232,7 +232,9 @@ export function MembershipModal({
         // 检查是否已配置
         const status = await lemonSqueezyService.getPaymentStatus();
         if (!status.isAvailable) {
-          throw new Error('全球支付服务暂未配置，请联系管理员');
+          // 如果服务不可用，显示一个友好的提示
+          alert('全球支付服务正在配置中，请稍后再试或选择其他支付方式');
+          return;
         }
         
         // 生成结账链接
@@ -265,7 +267,7 @@ export function MembershipModal({
       const isPaymentServiceAvailable = await checkPaymentServiceAvailability();
       
       if (!isPaymentServiceAvailable) {
-        throw new Error('支付服务暂未开通，请联系客服');
+        throw new Error('支付服务暂未开通，请联系客服进行人工充值。客服微信：nano_banana_service');
       }
       
       // 创建支付订单
