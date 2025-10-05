@@ -24,7 +24,7 @@ const AI_SERVICES = {
 };
 
 // 轮询获取Grsai API结果
-async function pollGrsaiResult(taskId: string, maxAttempts: number = 30, intervalMs: number = 2000): Promise<string> {
+async function pollGrsaiResult(taskId: string, maxAttempts: number = 60, intervalMs: number = 3000): Promise<string> {
   console.log(`🔄 开始轮询任务结果 - ID: ${taskId}`);
   
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -112,20 +112,20 @@ async function generateWithGrsai(prompt: string, options: any, imageBase64?: str
   if (imageBase64) {
     console.log(`🖼️ Grsai API 图片到图片模式：基于上传图片生成手办 (${style}风格)`);
     if (style === 'realistic') {
-      enhancedPrompt = `realistic figure of ${prompt}, 1/7 scale figure, detailed, high quality, based on uploaded reference image, figure model, collectible figure, pose reference, character design, photorealistic style, realistic materials, detailed textures`;
+      enhancedPrompt = `photorealistic figure sculpture of ${prompt}, 1/7 scale collectible figure, hyper-realistic materials, detailed skin texture, realistic fabric textures, professional photography lighting, museum quality, lifelike human features, detailed facial features, realistic hair, professional figure photography, high-end collectible, premium quality`;
     } else if (style === 'cartoon') {
-      enhancedPrompt = `cartoon figure of ${prompt}, 1/7 scale figure, detailed, high quality, based on uploaded reference image, figure model, collectible figure, pose reference, character design, cartoon style, stylized, simplified, cute, chibi style`;
+      enhancedPrompt = `chibi cartoon figure of ${prompt}, 1/7 scale cute collectible, big eyes, simplified features, chibi style, kawaii design, pastel colors, cute expression, simplified anatomy, adorable pose, cartoon art style, simplified shading, cute and playful, child-friendly design, toy-like appearance`;
     } else {
-      enhancedPrompt = `anime figure of ${prompt}, 1/7 scale figure, detailed, high quality, based on uploaded reference image, figure model, collectible figure, pose reference, character design, anime style, cel-shaded, vibrant colors`;
+      enhancedPrompt = `anime figure of ${prompt}, 1/7 scale anime collectible, cel-shaded style, vibrant anime colors, manga-style features, anime character design, detailed anime art, sharp clean lines, anime shading, bright colorful palette, anime pose, manga illustration style, anime figure model`;
     }
   } else {
     console.log(`🎨 Grsai API 文本到图片模式：生成手办 (${style}风格)`);
     if (style === 'realistic') {
-      enhancedPrompt = `${prompt}, realistic figure, 1/7 scale figure, detailed, high quality, commercialized figure, figure model, collectible figure, photorealistic style, realistic materials, detailed textures, lifelike appearance`;
+      enhancedPrompt = `photorealistic figure sculpture of ${prompt}, 1/7 scale collectible figure, hyper-realistic materials, detailed skin texture, realistic fabric textures, professional photography lighting, museum quality, lifelike human features, detailed facial features, realistic hair, professional figure photography, high-end collectible, premium quality, realistic pose`;
     } else if (style === 'cartoon') {
-      enhancedPrompt = `${prompt}, cartoon figure, 1/7 scale figure, detailed, high quality, commercialized figure, figure model, collectible figure, cartoon style, stylized, simplified, cute, chibi style, playful design`;
+      enhancedPrompt = `chibi cartoon figure of ${prompt}, 1/7 scale cute collectible, big eyes, simplified features, chibi style, kawaii design, pastel colors, cute expression, simplified anatomy, adorable pose, cartoon art style, simplified shading, cute and playful, child-friendly design, toy-like appearance, chibi pose`;
     } else {
-      enhancedPrompt = `${prompt}, anime figure, 1/7 scale figure, detailed, high quality, commercialized figure, figure model, collectible figure, anime style, cel-shaded, vibrant colors, manga style`;
+      enhancedPrompt = `anime figure of ${prompt}, 1/7 scale anime collectible, cel-shaded style, vibrant anime colors, manga-style features, anime character design, detailed anime art, sharp clean lines, anime shading, bright colorful palette, anime pose, manga illustration style, anime figure model, dynamic anime pose`;
     }
   }
 
